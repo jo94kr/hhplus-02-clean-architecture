@@ -7,7 +7,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.jdbc.Sql;
 
+
+@Sql("classpath:/db/create_lecture.sql")
 class LectureControllerIntegratedTest extends IntegratedTest {
 
     private static final String PATH = "/lecture";
