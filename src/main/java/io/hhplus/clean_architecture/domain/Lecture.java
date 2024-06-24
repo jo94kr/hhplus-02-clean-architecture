@@ -4,21 +4,39 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "lecture")
-public class Lecture {
+public class Lecture extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public Lecture(Long id) {
-        this.id = id;
+    @Column
+    private String lectureName;
+
+    @Column
+    private LocalDate lectureDate;
+
+    @Column
+    private int registerCnt;
+
+    @Column
+    private int capacity;
+
+    public Lecture(String lectureName,
+                   LocalDate lectureDate,
+                   int registerCnt,
+                   int capacity) {
+        this.lectureName = lectureName;
+        this.lectureDate = lectureDate;
+        this.registerCnt = registerCnt;
+        this.capacity = capacity;
     }
 
     @Override

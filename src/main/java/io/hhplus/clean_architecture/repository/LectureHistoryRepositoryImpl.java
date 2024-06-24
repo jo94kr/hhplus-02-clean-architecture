@@ -1,10 +1,7 @@
-package io.hhplus.clean_architecture.infra;
+package io.hhplus.clean_architecture.repository;
 
 import io.hhplus.clean_architecture.domain.LectureHistory;
-import io.hhplus.clean_architecture.repository.LectureHistoryJpaRepository;
-import io.hhplus.clean_architecture.repository.LectureHistoryRepository;
-import io.hhplus.clean_architecture.repository.LectureJpaRepository;
-import io.hhplus.clean_architecture.repository.LectureRepository;
+import io.hhplus.clean_architecture.infra.LectureHistoryJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

@@ -1,11 +1,11 @@
-package io.hhplus.clean_architecture.infra;
+package io.hhplus.clean_architecture.repository;
 
 import io.hhplus.clean_architecture.domain.Lecture;
-import io.hhplus.clean_architecture.repository.LectureJpaRepository;
-import io.hhplus.clean_architecture.repository.LectureRepository;
+import io.hhplus.clean_architecture.infra.LectureJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
 
 @Repository
