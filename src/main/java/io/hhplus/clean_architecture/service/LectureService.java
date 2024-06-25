@@ -1,6 +1,12 @@
 package io.hhplus.clean_architecture.service;
 
+import io.hhplus.clean_architecture.domain.Lecture;
+
+import java.util.List;
+
 public interface LectureService {
 
-    Boolean apply(Long userId, Long id);
+    Lecture apply(Long userId, Long id);
+
+    List<Lecture> findAllLectureList();
 }

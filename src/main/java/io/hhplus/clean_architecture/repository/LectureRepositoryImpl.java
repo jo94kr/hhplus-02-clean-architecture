@@ -5,6 +5,7 @@ import io.hhplus.clean_architecture.repository.infra.LectureJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Repository
@@ -24,5 +25,8 @@ public class LectureRepositoryImpl implements LectureRepository {
         return lectureJpaRepository.save(lecture);
     }
 
-
+    @Override
+    public List<Lecture> findAllLectureList() {
+        return lectureJpaRepository.findAll();
+    }
 }
