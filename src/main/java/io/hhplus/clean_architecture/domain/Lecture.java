@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -21,7 +22,7 @@ public class Lecture extends BaseEntity {
     private String lectureName;
 
     @Column
-    private LocalDate lectureDate;
+    private LocalDateTime lectureDatetime;
 
     @Column
     private int registerCnt;
@@ -30,11 +31,11 @@ public class Lecture extends BaseEntity {
     private int capacity;
 
     public Lecture(String lectureName,
-                   LocalDate lectureDate,
+                   LocalDateTime lectureDatetime,
                    int registerCnt,
                    int capacity) {
         this.lectureName = lectureName;
-        this.lectureDate = lectureDate;
+        this.lectureDatetime = lectureDatetime;
         this.registerCnt = registerCnt;
         this.capacity = capacity;
     }

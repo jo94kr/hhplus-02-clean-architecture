@@ -1,8 +1,6 @@
 package io.hhplus.clean_architecture.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,13 +11,22 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "lecture_history")
-public class LectureHistory {
+public class LectureHistory extends BaseCreateDatetimeEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public LectureHistory(Long id) {
-        this.id = id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_id")
+    private Lecture lecture;
+
+    @Column
+    private Long userId;
+
+    public LectureHistory(Lecture lecture, Long userId) {
+        this.lecture = lecture;
+        this.userId = userId;
     }
 
     @Override
