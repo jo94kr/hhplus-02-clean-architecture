@@ -1,8 +1,11 @@
 package io.hhplus.clean_architecture.service;
 
 import io.hhplus.clean_architecture.domain.Lecture;
+import io.hhplus.clean_architecture.domain.LectureHistory;
+import io.hhplus.clean_architecture.exception.LectureException;
 import io.hhplus.clean_architecture.repository.LectureHistoryRepository;
 import io.hhplus.clean_architecture.repository.LectureRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,9 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,20 +34,79 @@ class LectureServiceTest {
     @Mock
     private LectureHistoryRepository lectureHistoryRepository;
 
+    private Lecture defaultLecture;
+
+    @BeforeEach
+    void setUp() {
+        // 특강 기본 세팅
+        defaultLecture = new Lecture("항해 플러스 백엔드",
+                LocalDateTime.of(2024, 6, 25, 12, 0, 0),
+                30,
+                0);
+    }
+
     @Test
     @DisplayName("아이디로 특강 신청 성공")
     void apply() {
         // given
         Long lectureId = 1L;
         Long userId = 1L;
-        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDate.now(), 30, 0);
 
         // when
-        when(lectureRepository.findById(lectureId)).thenReturn(lecture);
-        Lecture result = lectureServiceImpl.apply(userId, userId);
+        when(lectureRepository.findById(lectureId)).thenReturn(defaultLecture);
+        Boolean result = lectureServiceImpl.apply(userId, userId);
 
         // then
         verify(lectureHistoryRepository).save(any());
-        assertThat(result).isEqualTo(lecture);
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("특강 중복 신청 불가 예외 발생")
+    void applyDuplicateLecture() {
+        // given
+        Long lectureId = 1L;
+        Long userId = 1L;
+
+        // when
+        when(lectureRepository.findById(lectureId)).thenReturn(defaultLecture);
+        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(defaultLecture, userId))
+                .thenReturn(Optional.of(new LectureHistory(defaultLecture, userId)));
+
+        // then
+        assertThrows(LectureException.class, () -> lectureServiceImpl.apply(userId, userId));
+    }
+
+    @Test
+    @DisplayName("특강 정원 30명 초과 예외 발생")
+    void lectureCapacity() {
+        // given
+        Long lectureId = 1L;
+        Long userId = 1L;
+        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now(), 30, 30);
+
+        // when
+        when(lectureRepository.findById(lectureId)).thenReturn(lecture);
+        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId))
+                .thenReturn(Optional.empty());
+
+        // then
+        assertThrows(LectureException.class, () -> lectureServiceImpl.apply(userId, userId));
+    }
+
+    @Test
+    @DisplayName("특강 시작일 이전에 특강 신청 시도 시 예외 발생")
+    void applyLectureBeforeStartDate() {
+        // given
+        Long lectureId = 1L;
+        Long userId = 1L;
+
+        // when
+        when(lectureRepository.findById(lectureId)).thenReturn(defaultLecture);
+        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(defaultLecture, userId))
+                .thenReturn(Optional.empty());
+
+        // then
+        assertThrows(LectureException.class, () -> lectureServiceImpl.apply(userId, userId));
     }
 }
