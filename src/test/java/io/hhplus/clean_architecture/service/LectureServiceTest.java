@@ -100,13 +100,14 @@ class LectureServiceTest {
         // given
         Long lectureId = 1L;
         Long userId = 1L;
+        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now().plusDays(1), 30, 30);
 
         // when
-        when(lectureRepository.findById(lectureId)).thenReturn(defaultLecture);
-        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(defaultLecture, userId))
+        when(lectureRepository.findById(lectureId)).thenReturn(lecture);
+        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId))
                 .thenReturn(Optional.empty());
 
         // then
-        assertThrows(LectureException.class, () -> lectureServiceImpl.apply(userId, userId));
+        assertThrows(LectureException.class, () -> lectureServiceImpl.apply(lectureId, userId));
     }
 }
