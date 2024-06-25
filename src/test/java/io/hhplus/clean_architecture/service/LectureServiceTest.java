@@ -2,7 +2,7 @@ package io.hhplus.clean_architecture.service;
 
 import io.hhplus.clean_architecture.domain.Lecture;
 import io.hhplus.clean_architecture.domain.LectureHistory;
-import io.hhplus.clean_architecture.exception.LectureException;
+import io.hhplus.clean_architecture.common.exception.BaseException;
 import io.hhplus.clean_architecture.repository.LectureHistoryRepository;
 import io.hhplus.clean_architecture.repository.LectureRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,8 +41,8 @@ class LectureServiceTest {
         // 특강 기본 세팅
         defaultLecture = new Lecture("항해 플러스 백엔드",
                 LocalDateTime.of(2024, 6, 25, 12, 0, 0),
-                30,
-                0);
+                0,
+                30);
     }
 
     @Test
@@ -54,11 +54,11 @@ class LectureServiceTest {
 
         // when
         when(lectureRepository.findById(lectureId)).thenReturn(defaultLecture);
-        Boolean result = lectureServiceImpl.apply(userId, userId);
+        Lecture result = lectureServiceImpl.apply(userId, userId);
 
         // then
         verify(lectureHistoryRepository).save(any());
-        assertThat(result).isTrue();
+        assertThat(result.getRegisterCnt()).isEqualTo(1);
     }
 
     @Test
@@ -74,7 +74,7 @@ class LectureServiceTest {
                 .thenReturn(Optional.of(new LectureHistory(defaultLecture, userId)));
 
         // then
-        assertThrows(LectureException.class, () -> lectureServiceImpl.apply(userId, userId));
+        assertThrows(BaseException.class, () -> lectureServiceImpl.apply(userId, userId));
     }
 
     @Test
@@ -91,7 +91,7 @@ class LectureServiceTest {
                 .thenReturn(Optional.empty());
 
         // then
-        assertThrows(LectureException.class, () -> lectureServiceImpl.apply(userId, userId));
+        assertThrows(BaseException.class, () -> lectureServiceImpl.apply(userId, userId));
     }
 
     @Test
@@ -108,6 +108,6 @@ class LectureServiceTest {
                 .thenReturn(Optional.empty());
 
         // then
-        assertThrows(LectureException.class, () -> lectureServiceImpl.apply(lectureId, userId));
+        assertThrows(BaseException.class, () -> lectureServiceImpl.apply(lectureId, userId));
     }
 }
