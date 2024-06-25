@@ -29,6 +29,10 @@ public class LectureHistory extends BaseCreateDatetimeEntity {
         this.userId = userId;
     }
 
+    public static LectureHistory registerLecture(Lecture lecture, Long userId) {
+        return new LectureHistory(lecture, userId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

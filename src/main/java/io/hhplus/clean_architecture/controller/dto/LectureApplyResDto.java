@@ -1,12 +1,10 @@
 package io.hhplus.clean_architecture.controller.dto;
 
-import io.hhplus.clean_architecture.domain.Lecture;
-
 public record LectureApplyResDto(
-        Long id
+        Boolean result
 ) {
 
-    public static LectureApplyResDto of(Lecture lecture) {
-        return new LectureApplyResDto(lecture.getId());
+    public static LectureApplyResDto of(Boolean result) {
+        return new LectureApplyResDto(result);
     }
 }

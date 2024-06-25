@@ -1,5 +1,6 @@
 package io.hhplus.clean_architecture.domain;
 
+import io.hhplus.clean_architecture.exception.LectureException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -7,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import static io.hhplus.clean_architecture.exception.LectureExceptionEnums.Exception.BEFORE_START_DATE;
+import static io.hhplus.clean_architecture.exception.LectureExceptionEnums.Exception.MAX_CAPACITY;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,6 +42,26 @@ public class Lecture extends BaseEntity {
         this.lectureDatetime = lectureDatetime;
         this.registerCnt = registerCnt;
         this.capacity = capacity;
+    }
+
+    /**
+     * 특강 신청
+     *
+     * @throws LectureException 특강 시작일 보다 먼저 신청 BEFORE_START_DATE
+     * @throws LectureException 정원 초과 시 MAX_CAPACITY
+     */
+    public Lecture registLecture() {
+        // 특강 시작일 체크
+        if (!LocalDateTime.now().isAfter(this.lectureDatetime)) {
+            throw new LectureException(BEFORE_START_DATE);
+        }
+        // 특강 정원 체크
+        if (this.capacity >= this.registerCnt) {
+            throw new LectureException(MAX_CAPACITY);
+        }
+
+        this.registerCnt = this.registerCnt + 1;
+        return this;
     }
 
     @Override

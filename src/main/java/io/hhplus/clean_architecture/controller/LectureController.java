@@ -15,9 +15,8 @@ public class LectureController {
 
     @PostMapping("/{lectureId}/apply")
     ResponseEntity<LectureApplyResDto> apply(@PathVariable(name = "lectureId") Long lectureId, @RequestBody Long userId) {
-        LectureApplyResDto response = LectureApplyResDto.of(lectureService.apply(lectureId, userId));
-
-        return ResponseEntity.ok().body(response);
+        LectureApplyResDto resDto = LectureApplyResDto.of(lectureService.apply(lectureId, userId));
+        return ResponseEntity.ok().body(resDto);
     }
 
 }

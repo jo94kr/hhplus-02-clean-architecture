@@ -2,11 +2,15 @@ package io.hhplus.clean_architecture.service;
 
 import io.hhplus.clean_architecture.domain.Lecture;
 import io.hhplus.clean_architecture.domain.LectureHistory;
+import io.hhplus.clean_architecture.exception.LectureException;
+import io.hhplus.clean_architecture.exception.LectureExceptionEnums;
 import io.hhplus.clean_architecture.repository.LectureHistoryRepository;
 import io.hhplus.clean_architecture.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,13 +21,21 @@ public class LectureServiceImpl implements LectureService {
     private final LectureHistoryRepository lectureHistoryRepository;
 
     @Override
-    public Lecture apply(Long lectureId, Long userId) {
+    @Transactional(rollbackFor = {Exception.class})
+    public Boolean apply(Long lectureId, Long userId) {
         // 특강 조회
         Lecture lecture = lectureRepository.findById(lectureId);
 
-        // 특강 신청 내역 등록
-        LectureHistory lectureHistory = lectureHistoryRepository.save(new LectureHistory(userId));
+        // 사용자 특강 조회
+        Optional<LectureHistory> optionalUserLectureHistory = lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId);
+        if (optionalUserLectureHistory.isPresent()) {
+            throw new LectureException(LectureExceptionEnums.Exception.ALREADY_EXISTS);
+        }
 
-        return lecture;
+        // 특강 신청
+        LectureHistory registerLectureHistory = LectureHistory.registerLecture(lecture.registLecture(), userId);
+        lectureHistoryRepository.save(registerLectureHistory);
+
+        return Boolean.TRUE;
     }
 }
