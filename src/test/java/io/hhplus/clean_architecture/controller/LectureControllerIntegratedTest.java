@@ -3,12 +3,12 @@ package io.hhplus.clean_architecture.controller;
 import io.hhplus.clean_architecture.IntegratedTest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Sql("classpath:/db/create_lecture.sql")
 class LectureControllerIntegratedTest extends IntegratedTest {
@@ -25,6 +25,7 @@ class LectureControllerIntegratedTest extends IntegratedTest {
         ExtractableResponse<Response> response = post(PATH + "/" + 1L + "/apply", userId);
 
         // then
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.body().jsonPath().getBoolean("result")).isTrue();
     }
 }
