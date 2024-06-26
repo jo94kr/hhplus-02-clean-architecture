@@ -24,4 +24,10 @@ public class LectureRepositoryImpl implements LectureRepository {
     public List<Lecture> findAllLectureList() {
         return lectureJpaRepository.findAll();
     }
+
+    @Override
+    public Lecture findById(Long lectureId) {
+        return lectureJpaRepository.findById(lectureId)
+                .orElseThrow(EntityNotFoundException::new);
+    }
 }

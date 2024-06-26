@@ -1,6 +1,7 @@
 package io.hhplus.clean_architecture.domain.service;
 
 import io.hhplus.clean_architecture.common.exception.BaseException;
+import io.hhplus.clean_architecture.controller.LectureService;
 import io.hhplus.clean_architecture.domain.LectureExceptionEnums;
 import io.hhplus.clean_architecture.domain.entity.Lecture;
 import io.hhplus.clean_architecture.domain.entity.LectureHistory;
@@ -41,5 +42,14 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public List<Lecture> findAllLectureList() {
         return lectureRepository.findAllLectureList();
+    }
+
+    @Override
+    public Boolean lectureApplicationCheck(Long userId, Long lectureId) {
+        // 특강 조회
+        Lecture lecture = lectureRepository.findById(lectureId);
+        
+        // 사용자 특강 조회
+        return lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId).isEmpty();
     }
 }
