@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LectureRepository {
 
-    Lecture findById(Long lectureId);
+    Lecture lockedFindById(Long lectureId);
 
     List<Lecture> findAllLectureList();
 }

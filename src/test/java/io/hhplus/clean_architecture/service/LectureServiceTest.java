@@ -54,11 +54,11 @@ class LectureServiceTest {
         Long userId = 1L;
 
         // when
-        when(lectureRepository.findById(lectureId)).thenReturn(defaultLecture);
+        when(lectureRepository.lockedFindById(lectureId)).thenReturn(defaultLecture);
         lectureServiceImpl.apply(userId, userId);
 
         // then
-        verify(lectureRepository).findById(lectureId);
+        verify(lectureRepository).lockedFindById(lectureId);
         verify(lectureHistoryRepository).findLectureHistoryByLectureAndUserId(defaultLecture, userId);
         verify(lectureHistoryRepository).save(any());
     }
@@ -71,7 +71,7 @@ class LectureServiceTest {
         Long userId = 1L;
 
         // when
-        when(lectureRepository.findById(lectureId)).thenReturn(defaultLecture);
+        when(lectureRepository.lockedFindById(lectureId)).thenReturn(defaultLecture);
         when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(defaultLecture, userId))
                 .thenReturn(Optional.of(new LectureHistory(defaultLecture, userId)));
 
@@ -90,7 +90,7 @@ class LectureServiceTest {
         Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now(), 30, 30);
 
         // when
-        when(lectureRepository.findById(lectureId)).thenReturn(lecture);
+        when(lectureRepository.lockedFindById(lectureId)).thenReturn(lecture);
         when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId))
                 .thenReturn(Optional.empty());
 
@@ -106,10 +106,10 @@ class LectureServiceTest {
         // given
         Long lectureId = 1L;
         Long userId = 1L;
-        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now().plusDays(1), 30, 30);
+        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now().plusDays(1), 0, 30);
 
         // when
-        when(lectureRepository.findById(lectureId)).thenReturn(lecture);
+        when(lectureRepository.lockedFindById(lectureId)).thenReturn(lecture);
         when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId))
                 .thenReturn(Optional.empty());
 

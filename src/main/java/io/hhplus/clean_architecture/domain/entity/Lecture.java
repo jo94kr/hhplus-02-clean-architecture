@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -20,18 +21,23 @@ public class Lecture extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Comment("특강 PK")
     private Long id;
 
     @Column(nullable = false)
+    @Comment("특강 명")
     private String lectureName;
-
+    
     @Column(nullable = false)
+    @Comment("특강 시작일시")
     private LocalDateTime lectureDatetime;
 
     @Column(nullable = false)
+    @Comment("신청 인원")
     private int registerCnt = 0;
 
     @Column(nullable = false)
+    @Comment("정원")
     private int capacity = 30;
 
     public Lecture(String lectureName,
@@ -60,7 +66,7 @@ public class Lecture extends BaseEntity {
             throw new BaseException(MAX_CAPACITY);
         }
 
-        this.registerCnt = this.registerCnt + 1;
+        this.registerCnt += 1;
     }
 
     @Override

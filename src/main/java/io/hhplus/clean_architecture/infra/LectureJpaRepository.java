@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface LectureJpaRepository extends JpaRepository<Lecture, Long> {
 
-    @Override
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<Lecture> findById(Long lectureId);
+    Optional<Lecture> findLectureById(Long lectureId);
 }

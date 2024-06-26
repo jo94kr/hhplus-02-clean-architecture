@@ -1,9 +1,9 @@
 package io.hhplus.clean_architecture.domain.service;
 
-import io.hhplus.clean_architecture.domain.entity.Lecture;
-import io.hhplus.clean_architecture.domain.LectureExceptionEnums;
-import io.hhplus.clean_architecture.domain.entity.LectureHistory;
 import io.hhplus.clean_architecture.common.exception.BaseException;
+import io.hhplus.clean_architecture.domain.LectureExceptionEnums;
+import io.hhplus.clean_architecture.domain.entity.Lecture;
+import io.hhplus.clean_architecture.domain.entity.LectureHistory;
 import io.hhplus.clean_architecture.domain.repository.LectureHistoryRepository;
 import io.hhplus.clean_architecture.domain.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +24,10 @@ public class LectureServiceImpl implements LectureService {
     @Transactional(rollbackFor = {Exception.class})
     public void apply(Long lectureId, Long userId) {
         // 특강 조회
-        Lecture lecture = lectureRepository.findById(lectureId);
+        Lecture lecture = lectureRepository.lockedFindById(lectureId);
 
         // 사용자 특강 조회
-        Optional<LectureHistory> optionalUserLectureHistory = lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId);
-        if (optionalUserLectureHistory.isPresent()) {
+        if (lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId).isPresent()) {
             throw new BaseException(LectureExceptionEnums.Exception.ALREADY_EXISTS);
         }
 
