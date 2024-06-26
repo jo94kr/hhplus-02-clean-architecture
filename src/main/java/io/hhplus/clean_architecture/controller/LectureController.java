@@ -1,8 +1,7 @@
 package io.hhplus.clean_architecture.controller;
 
-import io.hhplus.clean_architecture.controller.dto.LectureApplyResDto;
 import io.hhplus.clean_architecture.controller.dto.LectureResDto;
-import io.hhplus.clean_architecture.service.LectureService;
+import io.hhplus.clean_architecture.domain.service.LectureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +16,13 @@ public class LectureController {
     private final LectureService lectureService;
 
     @PostMapping("/{lectureId}/apply")
-    ResponseEntity<LectureApplyResDto> apply(@PathVariable(name = "lectureId") Long lectureId, @RequestBody Long userId) {
-        LectureApplyResDto resDto = LectureApplyResDto.of(lectureService.apply(lectureId, userId));
-        return ResponseEntity.ok().body(resDto);
+    public ResponseEntity<Void> apply(@PathVariable(name = "lectureId") Long lectureId, @RequestBody Long userId) {
+        lectureService.apply(lectureId, userId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    ResponseEntity<List<LectureResDto>> findAllLectureList() {
+    public ResponseEntity<List<LectureResDto>> findAllLectureList() {
         return ResponseEntity.ok().body(lectureService.findAllLectureList().stream()
                 .map(LectureResDto::of)
                 .toList());

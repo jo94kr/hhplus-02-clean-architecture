@@ -1,4 +1,4 @@
-package io.hhplus.clean_architecture.domain;
+package io.hhplus.clean_architecture.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -29,7 +29,7 @@ public class LectureHistory extends BaseCreateDatetimeEntity {
         this.userId = userId;
     }
 
-    public static LectureHistory registerLecture(Lecture lecture, Long userId) {
+    public static LectureHistory create(Lecture lecture, Long userId) {
         return new LectureHistory(lecture, userId);
     }
 

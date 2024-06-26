@@ -1,4 +1,4 @@
-package io.hhplus.clean_architecture.domain;
+package io.hhplus.clean_architecture.domain.entity;
 
 import io.hhplus.clean_architecture.common.exception.BaseException;
 import jakarta.persistence.*;
@@ -50,7 +50,7 @@ public class Lecture extends BaseEntity {
      * @throws BaseException 특강 시작일 보다 먼저 신청 BEFORE_START_DATE
      * @throws BaseException 정원 초과 시 MAX_CAPACITY
      */
-    public Lecture registLecture() {
+    public void apply() {
         // 특강 시작일 체크
         if (!LocalDateTime.now().isAfter(this.lectureDatetime)) {
             throw new BaseException(BEFORE_START_DATE);
@@ -61,7 +61,6 @@ public class Lecture extends BaseEntity {
         }
 
         this.registerCnt = this.registerCnt + 1;
-        return this;
     }
 
     @Override

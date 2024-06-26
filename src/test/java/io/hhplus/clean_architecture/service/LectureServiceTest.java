@@ -1,10 +1,13 @@
 package io.hhplus.clean_architecture.service;
 
-import io.hhplus.clean_architecture.domain.Lecture;
-import io.hhplus.clean_architecture.domain.LectureHistory;
 import io.hhplus.clean_architecture.common.exception.BaseException;
-import io.hhplus.clean_architecture.repository.LectureHistoryRepository;
-import io.hhplus.clean_architecture.repository.LectureRepository;
+import io.hhplus.clean_architecture.domain.LectureExceptionEnums;
+import io.hhplus.clean_architecture.domain.entity.Lecture;
+import io.hhplus.clean_architecture.domain.entity.LectureHistory;
+import io.hhplus.clean_architecture.domain.repository.LectureHistoryRepository;
+import io.hhplus.clean_architecture.domain.repository.LectureRepository;
+import io.hhplus.clean_architecture.domain.service.LectureServiceImpl;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,11 +55,12 @@ class LectureServiceTest {
 
         // when
         when(lectureRepository.findById(lectureId)).thenReturn(defaultLecture);
-        Lecture result = lectureServiceImpl.apply(userId, userId);
+        lectureServiceImpl.apply(userId, userId);
 
         // then
+        verify(lectureRepository).findById(lectureId);
+        verify(lectureHistoryRepository).findLectureHistoryByLectureAndUserId(defaultLecture, userId);
         verify(lectureHistoryRepository).save(any());
-        assertThat(result.getRegisterCnt()).isEqualTo(1);
     }
 
     @Test
@@ -74,7 +76,9 @@ class LectureServiceTest {
                 .thenReturn(Optional.of(new LectureHistory(defaultLecture, userId)));
 
         // then
-        assertThrows(BaseException.class, () -> lectureServiceImpl.apply(userId, userId));
+        Assertions.assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
+                .isInstanceOf(BaseException.class)
+                .hasMessageContaining(LectureExceptionEnums.Exception.ALREADY_EXISTS.getMessage());
     }
 
     @Test
@@ -91,7 +95,9 @@ class LectureServiceTest {
                 .thenReturn(Optional.empty());
 
         // then
-        assertThrows(BaseException.class, () -> lectureServiceImpl.apply(userId, userId));
+        Assertions.assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
+                .isInstanceOf(BaseException.class)
+                .hasMessageContaining(LectureExceptionEnums.Exception.MAX_CAPACITY.getMessage());
     }
 
     @Test
@@ -108,6 +114,8 @@ class LectureServiceTest {
                 .thenReturn(Optional.empty());
 
         // then
-        assertThrows(BaseException.class, () -> lectureServiceImpl.apply(lectureId, userId));
+        Assertions.assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
+                .isInstanceOf(BaseException.class)
+                .hasMessageContaining(LectureExceptionEnums.Exception.BEFORE_START_DATE.getMessage());
     }
 }

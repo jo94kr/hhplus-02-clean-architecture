@@ -1,7 +1,7 @@
-package io.hhplus.clean_architecture.repository.infra;
+package io.hhplus.clean_architecture.infra;
 
-import io.hhplus.clean_architecture.domain.Lecture;
-import io.hhplus.clean_architecture.domain.LectureHistory;
+import io.hhplus.clean_architecture.domain.entity.Lecture;
+import io.hhplus.clean_architecture.domain.entity.LectureHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

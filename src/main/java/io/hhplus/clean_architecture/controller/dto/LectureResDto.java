@@ -1,6 +1,6 @@
 package io.hhplus.clean_architecture.controller.dto;
 
-import io.hhplus.clean_architecture.domain.Lecture;
+import io.hhplus.clean_architecture.domain.entity.Lecture;
 
 import java.time.LocalDateTime;
 

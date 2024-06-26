@@ -1,11 +1,11 @@
-package io.hhplus.clean_architecture.service;
+package io.hhplus.clean_architecture.domain.service;
 
-import io.hhplus.clean_architecture.domain.Lecture;
+import io.hhplus.clean_architecture.domain.entity.Lecture;
 import io.hhplus.clean_architecture.domain.LectureExceptionEnums;
-import io.hhplus.clean_architecture.domain.LectureHistory;
+import io.hhplus.clean_architecture.domain.entity.LectureHistory;
 import io.hhplus.clean_architecture.common.exception.BaseException;
-import io.hhplus.clean_architecture.repository.LectureHistoryRepository;
-import io.hhplus.clean_architecture.repository.LectureRepository;
+import io.hhplus.clean_architecture.domain.repository.LectureHistoryRepository;
+import io.hhplus.clean_architecture.domain.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +23,7 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public Lecture apply(Long lectureId, Long userId) {
+    public void apply(Long lectureId, Long userId) {
         // 특강 조회
         Lecture lecture = lectureRepository.findById(lectureId);
 
@@ -34,10 +34,10 @@ public class LectureServiceImpl implements LectureService {
         }
 
         // 특강 신청
-        LectureHistory registerLectureHistory = LectureHistory.registerLecture(lecture.registLecture(), userId);
-        lectureHistoryRepository.save(registerLectureHistory);
-
-        return lecture;
+        lecture.apply();
+        
+        // 특강 내역 등록
+        lectureHistoryRepository.save(LectureHistory.create(lecture, userId));
     }
 
     @Override
