@@ -7,7 +7,6 @@ import io.hhplus.clean_architecture.domain.entity.LectureHistory;
 import io.hhplus.clean_architecture.domain.repository.LectureHistoryRepository;
 import io.hhplus.clean_architecture.domain.repository.LectureRepository;
 import io.hhplus.clean_architecture.domain.service.LectureServiceImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,7 +77,7 @@ class LectureServiceTest {
                 .thenReturn(Optional.of(new LectureHistory(defaultLecture, userId)));
 
         // then
-        Assertions.assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
+        assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
                 .isInstanceOf(BaseException.class)
                 .hasMessageContaining(LectureExceptionEnums.Exception.ALREADY_EXISTS.getMessage());
     }
@@ -95,7 +96,7 @@ class LectureServiceTest {
                 .thenReturn(Optional.empty());
 
         // then
-        Assertions.assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
+        assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
                 .isInstanceOf(BaseException.class)
                 .hasMessageContaining(LectureExceptionEnums.Exception.MAX_CAPACITY.getMessage());
     }
@@ -114,8 +115,43 @@ class LectureServiceTest {
                 .thenReturn(Optional.empty());
 
         // then
-        Assertions.assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
+        assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
                 .isInstanceOf(BaseException.class)
                 .hasMessageContaining(LectureExceptionEnums.Exception.BEFORE_START_DATE.getMessage());
+    }
+
+    @Test
+    @DisplayName("이미 신청한 특강 신청 여부 조회 시 false 반환")
+    void checkAlreadyAppliedLectureFalse() {
+        // given
+        Long lectureId = 1L;
+        Long userId = 1L;
+        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now().plusDays(1), 1, 30);
+        LectureHistory lectureHistory = LectureHistory.create(lecture, userId);
+
+        // when
+        when(lectureRepository.findById(lectureId)).thenReturn(lecture);
+        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId)).thenReturn(Optional.of(lectureHistory));
+        Boolean result = lectureServiceImpl.lectureApplicationCheck(userId, lectureId);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("이미 신청한 특강 신청 여부 조회 시 true 반환")
+    void checkAlreadyAppliedLectureTrue() {
+        // given
+        Long lectureId = 1L;
+        Long userId = 1L;
+        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now().plusDays(1), 1, 30);
+
+        // when
+        when(lectureRepository.findById(lectureId)).thenReturn(lecture);
+        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId)).thenReturn(Optional.empty());
+        Boolean result = lectureServiceImpl.lectureApplicationCheck(userId, lectureId);
+
+        // then
+        assertThat(result).isTrue();
     }
 }
