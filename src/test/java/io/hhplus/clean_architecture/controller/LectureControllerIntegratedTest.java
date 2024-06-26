@@ -20,16 +20,17 @@ class LectureControllerIntegratedTest extends IntegratedTest {
     private static final String PATH = "/lectures";
 
     @Test
-    @DisplayName("POST /lecture/apply 호출")
+    @DisplayName("POST /{lectureScheduleId}/apply - 특강 신청")
     void apply() {
         // given
         Long userId = 1L;
+        Long lectureScheduleId = 1L;
 
         // when
-        ExtractableResponse<Response> response = post(PATH + "/" + 1L + "/apply", userId);
+        ExtractableResponse<Response> response = post(PATH + "/" + lectureScheduleId + "/apply", userId);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
@@ -51,7 +52,7 @@ class LectureControllerIntegratedTest extends IntegratedTest {
         // then
         List<Integer> failCnt = Arrays.stream(futureArray)
                 .map(CompletableFuture::join)
-                .filter(statusCode -> statusCode != HttpStatus.NO_CONTENT.value())
+                .filter(statusCode -> statusCode != HttpStatus.OK.value())
                 .toList();
 
         assertThat(failCnt).hasSize(5);
@@ -63,6 +64,19 @@ class LectureControllerIntegratedTest extends IntegratedTest {
         // given
         // when
         ExtractableResponse<Response> response = get(PATH);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("GET /{lectureId}/schedule - 특강 스케쥴 목록 조회")
+    void findAllLectureSchedule() {
+        // given
+        Long lectureId = 1L;
+
+        // when
+        ExtractableResponse<Response> response = get(PATH + "/" + lectureId + "/schedule");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

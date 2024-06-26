@@ -4,8 +4,9 @@ import io.hhplus.clean_architecture.common.exception.BaseException;
 import io.hhplus.clean_architecture.domain.LectureExceptionEnums;
 import io.hhplus.clean_architecture.domain.entity.Lecture;
 import io.hhplus.clean_architecture.domain.entity.LectureHistory;
+import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
 import io.hhplus.clean_architecture.domain.repository.LectureHistoryRepository;
-import io.hhplus.clean_architecture.domain.repository.LectureRepository;
+import io.hhplus.clean_architecture.domain.repository.LectureScheduleRepository;
 import io.hhplus.clean_architecture.domain.service.LectureServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,36 +32,39 @@ class LectureServiceTest {
     private LectureServiceImpl lectureServiceImpl;
 
     @Mock
-    private LectureRepository lectureRepository;
-
-    @Mock
     private LectureHistoryRepository lectureHistoryRepository;
 
-    private Lecture defaultLecture;
+    @Mock
+    private LectureScheduleRepository lectureScheduleRepository;
+
+    private LectureSchedule defaultLectureSchedule;
 
     @BeforeEach
     void setUp() {
         // 특강 기본 세팅
-        defaultLecture = new Lecture("항해 플러스 백엔드",
+        Lecture defaultLecture = new Lecture("항해 플러스 백엔드");
+        defaultLectureSchedule = new LectureSchedule(
+                defaultLecture,
                 LocalDateTime.of(2024, 6, 25, 12, 0, 0),
                 0,
-                30);
+                30
+        );
     }
 
     @Test
     @DisplayName("아이디로 특강 신청 성공")
     void apply() {
         // given
-        Long lectureId = 1L;
+        Long lectureScheduleId = 1L;
         Long userId = 1L;
 
         // when
-        when(lectureRepository.lockedFindById(lectureId)).thenReturn(defaultLecture);
+        when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(defaultLectureSchedule);
         lectureServiceImpl.apply(userId, userId);
 
         // then
-        verify(lectureRepository).lockedFindById(lectureId);
-        verify(lectureHistoryRepository).findLectureHistoryByLectureAndUserId(defaultLecture, userId);
+        verify(lectureScheduleRepository).lockedFindById(lectureScheduleId);
+        verify(lectureHistoryRepository).findLectureHistoryByLectureScheduleAndUserId(defaultLectureSchedule, userId);
         verify(lectureHistoryRepository).save(any());
     }
 
@@ -68,13 +72,13 @@ class LectureServiceTest {
     @DisplayName("특강 중복 신청 불가 예외 발생")
     void applyDuplicateLecture() {
         // given
-        Long lectureId = 1L;
+        Long lectureScheduleId = 1L;
         Long userId = 1L;
 
         // when
-        when(lectureRepository.lockedFindById(lectureId)).thenReturn(defaultLecture);
-        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(defaultLecture, userId))
-                .thenReturn(Optional.of(new LectureHistory(defaultLecture, userId)));
+        when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(defaultLectureSchedule);
+        when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(defaultLectureSchedule, userId))
+                .thenReturn(Optional.of(new LectureHistory(defaultLectureSchedule, userId)));
 
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
@@ -86,13 +90,14 @@ class LectureServiceTest {
     @DisplayName("특강 정원 30명 초과 예외 발생")
     void lectureCapacity() {
         // given
-        Long lectureId = 1L;
+        Long lectureScheduleId = 1L;
         Long userId = 1L;
-        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now(), 30, 30);
+        Lecture lecture = new Lecture("항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = new LectureSchedule(lecture, LocalDateTime.now(), 30, 30);
 
         // when
-        when(lectureRepository.lockedFindById(lectureId)).thenReturn(lecture);
-        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId))
+        when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(lectureSchedule);
+        when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId))
                 .thenReturn(Optional.empty());
 
         // then
@@ -107,11 +112,12 @@ class LectureServiceTest {
         // given
         Long lectureId = 1L;
         Long userId = 1L;
-        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now().plusDays(1), 0, 30);
+        Lecture lecture = new Lecture("항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = new LectureSchedule(lecture, LocalDateTime.now().plusDays(1), 0, 30);
 
         // when
-        when(lectureRepository.lockedFindById(lectureId)).thenReturn(lecture);
-        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId))
+        when(lectureScheduleRepository.lockedFindById(lectureId)).thenReturn(lectureSchedule);
+        when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId))
                 .thenReturn(Optional.empty());
 
         // then
@@ -124,15 +130,16 @@ class LectureServiceTest {
     @DisplayName("이미 신청한 특강 신청 여부 조회 시 false 반환")
     void checkAlreadyAppliedLectureFalse() {
         // given
-        Long lectureId = 1L;
+        Long lectureScheduleId = 1L;
         Long userId = 1L;
-        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now().plusDays(1), 1, 30);
-        LectureHistory lectureHistory = LectureHistory.create(lecture, userId);
+        Lecture lecture = new Lecture("항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = new LectureSchedule(lecture, LocalDateTime.now().plusDays(1), 1, 30);
+        LectureHistory lectureHistory = LectureHistory.create(lectureSchedule, userId);
 
         // when
-        when(lectureRepository.findById(lectureId)).thenReturn(lecture);
-        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId)).thenReturn(Optional.of(lectureHistory));
-        Boolean result = lectureServiceImpl.lectureApplicationCheck(userId, lectureId);
+        when(lectureScheduleRepository.findById(lectureScheduleId)).thenReturn(lectureSchedule);
+        when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId)).thenReturn(Optional.of(lectureHistory));
+        Boolean result = lectureServiceImpl.lectureApplicationCheck(userId, lectureScheduleId);
 
         // then
         assertThat(result).isFalse();
@@ -142,14 +149,15 @@ class LectureServiceTest {
     @DisplayName("이미 신청한 특강 신청 여부 조회 시 true 반환")
     void checkAlreadyAppliedLectureTrue() {
         // given
-        Long lectureId = 1L;
+        Long lectureScheduleId = 1L;
         Long userId = 1L;
-        Lecture lecture = new Lecture("항해 플러스 백엔드", LocalDateTime.now().plusDays(1), 1, 30);
+        Lecture lecture = new Lecture("항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = new LectureSchedule(lecture, LocalDateTime.now().plusDays(1), 1, 30);
 
         // when
-        when(lectureRepository.findById(lectureId)).thenReturn(lecture);
-        when(lectureHistoryRepository.findLectureHistoryByLectureAndUserId(lecture, userId)).thenReturn(Optional.empty());
-        Boolean result = lectureServiceImpl.lectureApplicationCheck(userId, lectureId);
+        when(lectureScheduleRepository.findById(lectureScheduleId)).thenReturn(lectureSchedule);
+        when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId)).thenReturn(Optional.empty());
+        Boolean result = lectureServiceImpl.lectureApplicationCheck(userId, lectureScheduleId);
 
         // then
         assertThat(result).isTrue();
