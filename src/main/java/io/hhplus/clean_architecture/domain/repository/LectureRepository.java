@@ -7,11 +7,6 @@ import java.util.List;
 public interface LectureRepository {
 
     /**
-     * 특강 조회 - 비관적 락 사용
-     */
-    Lecture lockedFindById(Long lectureId);
-
-    /**
      * 특강 조회
      */
     Lecture findById(Long lectureId);

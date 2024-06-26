@@ -20,21 +20,21 @@ public class LectureHistory extends BaseCreateDatetimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_id")
-    @Comment("특강 PK")
-    private Lecture lecture;
+    @JoinColumn(name = "lecture_schedule_id")
+    @Comment("특강 스케쥴 PK")
+    private LectureSchedule lectureSchedule;
 
     @Column
     @Comment("사용자 PK")
     private Long userId;
 
-    public LectureHistory(Lecture lecture, Long userId) {
-        this.lecture = lecture;
+    public LectureHistory(LectureSchedule lectureSchedule, Long userId) {
+        this.lectureSchedule = lectureSchedule;
         this.userId = userId;
     }
 
-    public static LectureHistory create(Lecture lecture, Long userId) {
-        return new LectureHistory(lecture, userId);
+    public static LectureHistory create(LectureSchedule lectureSchedule, Long userId) {
+        return new LectureHistory(lectureSchedule, userId);
     }
 
     @Override

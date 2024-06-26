@@ -27,46 +27,9 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     @Comment("특강 명")
     private String lectureName;
-    
-    @Column(nullable = false)
-    @Comment("특강 시작일시")
-    private LocalDateTime lectureDatetime;
 
-    @Column(nullable = false)
-    @Comment("신청 인원")
-    private int registerCnt = 0;
-
-    @Column(nullable = false)
-    @Comment("정원")
-    private int capacity = 30;
-
-    public Lecture(String lectureName,
-                   LocalDateTime lectureDatetime,
-                   int registerCnt,
-                   int capacity) {
+    public Lecture(String lectureName) {
         this.lectureName = lectureName;
-        this.lectureDatetime = lectureDatetime;
-        this.registerCnt = registerCnt;
-        this.capacity = capacity;
-    }
-
-    /**
-     * 특강 신청
-     *
-     * @throws BaseException 특강 시작일 보다 먼저 신청 BEFORE_START_DATE
-     * @throws BaseException 정원 초과 시 MAX_CAPACITY
-     */
-    public void apply() {
-        // 특강 시작일 체크
-        if (!LocalDateTime.now().isAfter(this.lectureDatetime)) {
-            throw new BaseException(BEFORE_START_DATE);
-        }
-        // 특강 정원 체크
-        if (this.capacity <= this.registerCnt) {
-            throw new BaseException(MAX_CAPACITY);
-        }
-
-        this.registerCnt += 1;
     }
 
     @Override

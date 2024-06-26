@@ -15,12 +15,6 @@ public class LectureRepositoryImpl implements LectureRepository {
     private final LectureJpaRepository lectureJpaRepository;
 
     @Override
-    public Lecture lockedFindById(Long lectureId) {
-        return lectureJpaRepository.findLectureById(lectureId)
-                .orElseThrow(EntityNotFoundException::new);
-    }
-
-    @Override
     public List<Lecture> findAllLectureList() {
         return lectureJpaRepository.findAll();
     }
