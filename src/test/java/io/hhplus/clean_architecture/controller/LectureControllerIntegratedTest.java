@@ -29,8 +29,7 @@ class LectureControllerIntegratedTest extends IntegratedTest {
         ExtractableResponse<Response> response = post(PATH + "/" + 1L + "/apply", userId);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.body().jsonPath().getBoolean("result")).isTrue();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -52,7 +51,7 @@ class LectureControllerIntegratedTest extends IntegratedTest {
         // then
         List<Integer> failCnt = Arrays.stream(futureArray)
                 .map(CompletableFuture::join)
-                .filter(statusCode -> statusCode != 200)
+                .filter(statusCode -> statusCode != HttpStatus.NO_CONTENT.value())
                 .toList();
 
         assertThat(failCnt).hasSize(5);
