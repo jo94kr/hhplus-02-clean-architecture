@@ -1,13 +1,14 @@
-package io.hhplus.clean_architecture.service;
+package io.hhplus.clean_architecture.domain.service;
 
-import io.hhplus.clean_architecture.common.exception.BaseException;
+import io.hhplus.clean_architecture.domain.exception.AlreadyExistException;
+import io.hhplus.clean_architecture.domain.exception.LectureCapacityException;
+import io.hhplus.clean_architecture.domain.exception.LectureDateException;
 import io.hhplus.clean_architecture.domain.exception.LectureExceptionEnums;
 import io.hhplus.clean_architecture.domain.entity.Lecture;
 import io.hhplus.clean_architecture.domain.entity.LectureHistory;
 import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
 import io.hhplus.clean_architecture.domain.repository.LectureHistoryRepository;
 import io.hhplus.clean_architecture.domain.repository.LectureScheduleRepository;
-import io.hhplus.clean_architecture.domain.service.LectureServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -82,7 +83,7 @@ class LectureServiceTest {
 
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
-                .isInstanceOf(BaseException.class)
+                .isInstanceOf(AlreadyExistException.class)
                 .hasMessageContaining(LectureExceptionEnums.Exception.ALREADY_EXISTS.getMessage());
     }
 
@@ -102,7 +103,7 @@ class LectureServiceTest {
 
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
-                .isInstanceOf(BaseException.class)
+                .isInstanceOf(LectureCapacityException.class)
                 .hasMessageContaining(LectureExceptionEnums.Exception.MAX_CAPACITY.getMessage());
     }
 
@@ -122,7 +123,7 @@ class LectureServiceTest {
 
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
-                .isInstanceOf(BaseException.class)
+                .isInstanceOf(LectureDateException.class)
                 .hasMessageContaining(LectureExceptionEnums.Exception.BEFORE_START_DATE.getMessage());
     }
 
