@@ -1,7 +1,7 @@
-package io.hhplus.clean_architecture.domain.service;
+package io.hhplus.clean_architecture.domain.lecture.service;
 
-import io.hhplus.clean_architecture.domain.entity.Lecture;
-import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
+import io.hhplus.clean_architecture.domain.lecture.Lecture;
+import io.hhplus.clean_architecture.domain.lecture.LectureSchedule;
 
 import java.util.List;
 

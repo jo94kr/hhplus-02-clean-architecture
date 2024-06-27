@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,11 +61,39 @@ class LectureControllerIntegratedTest extends IntegratedTest {
     }
 
     @Test
+    @DisplayName("동일한 사용자가 동일한 특강 동시 호출")
+    void test() {
+        // given
+        // when
+        int cnt = 2;
+        CompletableFuture<Integer>[] futureArray = new CompletableFuture[cnt];
+        for (int i = 0; i < cnt; i++) {
+            futureArray[i] = CompletableFuture.supplyAsync(() -> {
+                ExtractableResponse<Response> post = post(PATH + "/" + 1L + "/apply", 1L);
+                return post.statusCode();
+            });
+        }
+        CompletableFuture.allOf(futureArray).join();
+
+        // then
+        List<Integer> failCnt = Arrays.stream(futureArray)
+                .map(CompletableFuture::join)
+                .filter(statusCode -> statusCode != HttpStatus.OK.value())
+                .toList();
+
+        assertThat(failCnt).hasSize(1);
+    }
+
+    @Test
     @DisplayName("특강 목록 조회")
     void findAllLecture() {
         // given
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("page", 0);
+        requestParams.put("size", 1);
+
         // when
-        ExtractableResponse<Response> response = get(PATH);
+        ExtractableResponse<Response> response = get(PATH, requestParams);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

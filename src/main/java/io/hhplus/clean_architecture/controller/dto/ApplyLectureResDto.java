@@ -1,7 +1,7 @@
 package io.hhplus.clean_architecture.controller.dto;
 
-import io.hhplus.clean_architecture.domain.entity.Lecture;
-import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
+import io.hhplus.clean_architecture.domain.lecture.Lecture;
+import io.hhplus.clean_architecture.domain.lecture.LectureSchedule;
 
 public record ApplyLectureResDto(
         Long lectureId,
@@ -10,7 +10,7 @@ public record ApplyLectureResDto(
 ) {
 
     public static ApplyLectureResDto of(LectureSchedule lectureSchedule) {
-        Lecture lecture = lectureSchedule.getLecture();
-        return new ApplyLectureResDto(lecture.getId(), lectureSchedule.getId(), lecture.getLectureName());
+        Lecture lectureEntity = lectureSchedule.getLecture();
+        return new ApplyLectureResDto(lectureEntity.getId(), lectureSchedule.getId(), lectureEntity.getLectureName());
     }
 }

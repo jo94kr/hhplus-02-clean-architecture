@@ -1,8 +1,8 @@
-package io.hhplus.clean_architecture.domain.entity;
+package io.hhplus.clean_architecture.infra.entity;
 
 import io.hhplus.clean_architecture.common.exception.BaseException;
-import io.hhplus.clean_architecture.domain.exception.LectureCapacityException;
-import io.hhplus.clean_architecture.domain.exception.LectureDateException;
+import io.hhplus.clean_architecture.domain.lecture.exception.LectureCapacityException;
+import io.hhplus.clean_architecture.domain.lecture.exception.LectureDateException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "lecture_schedule")
-public class LectureSchedule extends BaseEntity {
+public class LectureScheduleEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class LectureSchedule extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id")
     @Comment("특강 PK")
-    private Lecture lecture;
+    private LectureEntity lecture;
 
     @Column(nullable = false)
     @Comment("특강 시작일시")
@@ -40,11 +40,13 @@ public class LectureSchedule extends BaseEntity {
     @Comment("정원")
     private int capacity = 30;
 
-    public LectureSchedule(Lecture lecture,
-                           LocalDateTime lectureDatetime,
-                           int registerCnt,
-                           int capacity) {
-        this.lecture = lecture;
+    public LectureScheduleEntity(Long id,
+                                 LectureEntity lectureEntity,
+                                 LocalDateTime lectureDatetime,
+                                 int registerCnt,
+                                 int capacity) {
+        this.id = id;
+        this.lecture = lectureEntity;
         this.lectureDatetime = lectureDatetime;
         this.registerCnt = registerCnt;
         this.capacity = capacity;
@@ -56,7 +58,7 @@ public class LectureSchedule extends BaseEntity {
      * @throws BaseException 특강 시작일 보다 먼저 신청 BEFORE_START_DATE
      * @throws BaseException 정원 초과 시 MAX_CAPACITY
      */
-    public LectureSchedule apply() {
+    public LectureScheduleEntity apply() {
         // 특강 시작일 체크
         if (!LocalDateTime.now().isAfter(this.lectureDatetime)) {
             throw new LectureDateException();
@@ -75,8 +77,8 @@ public class LectureSchedule extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LectureSchedule lectureSchedule = (LectureSchedule) o;
-        return Objects.equals(id, lectureSchedule.id);
+        LectureScheduleEntity lectureScheduleEntity = (LectureScheduleEntity) o;
+        return Objects.equals(id, lectureScheduleEntity.id);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package io.hhplus.clean_architecture.domain.entity;
+package io.hhplus.clean_architecture.infra.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

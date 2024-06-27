@@ -1,4 +1,4 @@
-package io.hhplus.clean_architecture.domain.entity;
+package io.hhplus.clean_architecture.infra.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,7 +12,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "lecture")
-public class Lecture extends BaseEntity {
+public class LectureEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,12 @@ public class Lecture extends BaseEntity {
     @Comment("특강 명")
     private String lectureName;
 
-    public Lecture(String lectureName) {
+    public LectureEntity(Long id, String lectureName) {
+        this.id = id;
+        this.lectureName = lectureName;
+    }
+
+    public LectureEntity(String lectureName) {
         this.lectureName = lectureName;
     }
 
@@ -31,8 +36,8 @@ public class Lecture extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Lecture lecture = (Lecture) o;
-        return Objects.equals(id, lecture.id);
+        LectureEntity lectureEntity = (LectureEntity) o;
+        return Objects.equals(id, lectureEntity.id);
     }
 
     @Override

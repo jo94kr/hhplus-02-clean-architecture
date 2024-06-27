@@ -1,12 +1,17 @@
 package io.hhplus.clean_architecture.infra;
 
-import io.hhplus.clean_architecture.domain.entity.Lecture;
-import io.hhplus.clean_architecture.domain.entity.LectureHistory;
-import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
-import io.hhplus.clean_architecture.domain.repository.LectureHistoryRepository;
+import io.hhplus.clean_architecture.domain.lecture.LectureHistory;
+import io.hhplus.clean_architecture.domain.lecture.LectureSchedule;
+import io.hhplus.clean_architecture.infra.entity.LectureHistoryEntity;
+import io.hhplus.clean_architecture.infra.entity.LectureScheduleEntity;
+import io.hhplus.clean_architecture.domain.lecture.repository.LectureHistoryRepository;
+import io.hhplus.clean_architecture.infra.mapper.LectureHistoryMapper;
+import io.hhplus.clean_architecture.infra.mapper.LectureMapper;
+import io.hhplus.clean_architecture.infra.mapper.LectureScheduleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -16,12 +21,14 @@ public class LectureHistoryRepositoryImpl implements LectureHistoryRepository {
     private final LectureHistoryJpaRepository lectureHistoryJpaRepository;
 
     @Override
-    public LectureHistory save(LectureHistory lectureHistory) {
-        return lectureHistoryJpaRepository.save(lectureHistory);
+    public LectureHistory save(LectureHistory lectureHistoryEntity) {
+        return LectureHistoryMapper.toDomain(lectureHistoryJpaRepository.save(LectureHistoryMapper.toEntity(lectureHistoryEntity)));
     }
 
     @Override
     public Optional<LectureHistory> findLectureHistoryByLectureScheduleAndUserId(LectureSchedule lectureSchedule, Long userId) {
-        return lectureHistoryJpaRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId);
+        LectureScheduleEntity lectureScheduleEntity = LectureScheduleMapper.toEntity(lectureSchedule);
+        Optional<LectureHistoryEntity> optionalLectureHistoryEntity = lectureHistoryJpaRepository.findLectureHistoryByLectureScheduleAndUserId(lectureScheduleEntity, userId);
+        return optionalLectureHistoryEntity.map(LectureHistoryMapper::toDomain);
     }
 }

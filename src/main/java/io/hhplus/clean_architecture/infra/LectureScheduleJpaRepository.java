@@ -1,7 +1,7 @@
 package io.hhplus.clean_architecture.infra;
 
-import io.hhplus.clean_architecture.domain.entity.Lecture;
-import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
+import io.hhplus.clean_architecture.infra.entity.LectureEntity;
+import io.hhplus.clean_architecture.infra.entity.LectureScheduleEntity;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -9,10 +9,10 @@ import org.springframework.data.jpa.repository.Lock;
 import java.util.List;
 import java.util.Optional;
 
-public interface LectureScheduleJpaRepository extends JpaRepository<LectureSchedule, Long> {
+public interface LectureScheduleJpaRepository extends JpaRepository<LectureScheduleEntity, Long> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<LectureSchedule> findLectureScheduleById(Long lectureScheduleId);
+    Optional<LectureScheduleEntity> findLectureScheduleById(Long lectureScheduleId);
 
-    List<LectureSchedule> findAllByLecture(Lecture lecture);
+    List<LectureScheduleEntity> findAllByLecture(LectureEntity lectureEntity);
 }

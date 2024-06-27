@@ -1,7 +1,9 @@
 package io.hhplus.clean_architecture.infra;
 
-import io.hhplus.clean_architecture.domain.entity.Lecture;
-import io.hhplus.clean_architecture.domain.repository.LectureRepository;
+import io.hhplus.clean_architecture.domain.lecture.Lecture;
+import io.hhplus.clean_architecture.infra.entity.LectureEntity;
+import io.hhplus.clean_architecture.domain.lecture.repository.LectureRepository;
+import io.hhplus.clean_architecture.infra.mapper.LectureMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,12 +18,14 @@ public class LectureRepositoryImpl implements LectureRepository {
 
     @Override
     public List<Lecture> findAllLectureList() {
-        return lectureJpaRepository.findAll();
+        return lectureJpaRepository.findAll().stream()
+                .map(LectureMapper::toDomain)
+                .toList();
     }
 
     @Override
     public Lecture findById(Long lectureId) {
-        return lectureJpaRepository.findById(lectureId)
-                .orElseThrow(EntityNotFoundException::new);
+        return LectureMapper.toDomain(lectureJpaRepository.findById(lectureId)
+                .orElseThrow(EntityNotFoundException::new));
     }
 }

@@ -1,4 +1,4 @@
-package io.hhplus.clean_architecture.domain.exception;
+package io.hhplus.clean_architecture.domain.lecture.exception;
 
 import io.hhplus.clean_architecture.common.exception.BaseException;
 

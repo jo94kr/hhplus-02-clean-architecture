@@ -1,6 +1,6 @@
 package io.hhplus.clean_architecture.controller.dto;
 
-import io.hhplus.clean_architecture.domain.entity.Lecture;
+import io.hhplus.clean_architecture.domain.lecture.Lecture;
 
 public record FindLectureResDto(
         Long lectureId,

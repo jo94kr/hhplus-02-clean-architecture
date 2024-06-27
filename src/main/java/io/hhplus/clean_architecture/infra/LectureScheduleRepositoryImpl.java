@@ -1,8 +1,12 @@
 package io.hhplus.clean_architecture.infra;
 
-import io.hhplus.clean_architecture.domain.entity.Lecture;
-import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
-import io.hhplus.clean_architecture.domain.repository.LectureScheduleRepository;
+import io.hhplus.clean_architecture.domain.lecture.Lecture;
+import io.hhplus.clean_architecture.domain.lecture.LectureSchedule;
+import io.hhplus.clean_architecture.infra.entity.LectureEntity;
+import io.hhplus.clean_architecture.infra.entity.LectureScheduleEntity;
+import io.hhplus.clean_architecture.domain.lecture.repository.LectureScheduleRepository;
+import io.hhplus.clean_architecture.infra.mapper.LectureMapper;
+import io.hhplus.clean_architecture.infra.mapper.LectureScheduleMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,18 +21,25 @@ public class LectureScheduleRepositoryImpl implements LectureScheduleRepository 
 
     @Override
     public LectureSchedule lockedFindById(Long lectureScheduleId) {
-        return lectureScheduleJpaRepository.findLectureScheduleById(lectureScheduleId)
-                .orElseThrow(EntityNotFoundException::new);
+        return LectureScheduleMapper.toDomain(lectureScheduleJpaRepository.findLectureScheduleById(lectureScheduleId)
+                .orElseThrow(EntityNotFoundException::new));
     }
 
     @Override
     public LectureSchedule findById(Long lectureScheduleId) {
-        return lectureScheduleJpaRepository.findById(lectureScheduleId)
-                .orElseThrow(EntityNotFoundException::new);
+        return LectureScheduleMapper.toDomain(lectureScheduleJpaRepository.findById(lectureScheduleId)
+                .orElseThrow(EntityNotFoundException::new));
     }
 
     @Override
     public List<LectureSchedule> findAllLectureScheduleList(Lecture lecture) {
-        return lectureScheduleJpaRepository.findAllByLecture(lecture);
+        return lectureScheduleJpaRepository.findAllByLecture(LectureMapper.toEntity(lecture)).stream()
+                .map(LectureScheduleMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public LectureSchedule save(LectureSchedule lectureSchedule) {
+        return LectureScheduleMapper.toDomain(lectureScheduleJpaRepository.save(LectureScheduleMapper.toEntity(lectureSchedule)));
     }
 }

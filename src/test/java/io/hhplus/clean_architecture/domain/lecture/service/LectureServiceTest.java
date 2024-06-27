@@ -1,14 +1,14 @@
-package io.hhplus.clean_architecture.domain.service;
+package io.hhplus.clean_architecture.domain.lecture.service;
 
-import io.hhplus.clean_architecture.domain.exception.AlreadyExistException;
-import io.hhplus.clean_architecture.domain.exception.LectureCapacityException;
-import io.hhplus.clean_architecture.domain.exception.LectureDateException;
-import io.hhplus.clean_architecture.domain.exception.LectureExceptionEnums;
-import io.hhplus.clean_architecture.domain.entity.Lecture;
-import io.hhplus.clean_architecture.domain.entity.LectureHistory;
-import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
-import io.hhplus.clean_architecture.domain.repository.LectureHistoryRepository;
-import io.hhplus.clean_architecture.domain.repository.LectureScheduleRepository;
+import io.hhplus.clean_architecture.domain.lecture.Lecture;
+import io.hhplus.clean_architecture.domain.lecture.LectureHistory;
+import io.hhplus.clean_architecture.domain.lecture.LectureSchedule;
+import io.hhplus.clean_architecture.domain.lecture.exception.AlreadyExistException;
+import io.hhplus.clean_architecture.domain.lecture.exception.LectureCapacityException;
+import io.hhplus.clean_architecture.domain.lecture.exception.LectureDateException;
+import io.hhplus.clean_architecture.domain.lecture.exception.LectureExceptionEnums;
+import io.hhplus.clean_architecture.domain.lecture.repository.LectureHistoryRepository;
+import io.hhplus.clean_architecture.domain.lecture.repository.LectureScheduleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,13 +43,14 @@ class LectureServiceTest {
     @BeforeEach
     void setUp() {
         // 특강 기본 세팅
-        Lecture defaultLecture = new Lecture("항해 플러스 백엔드");
-        defaultLectureSchedule = new LectureSchedule(
-                defaultLecture,
-                LocalDateTime.of(2024, 6, 25, 12, 0, 0),
-                0,
-                30
-        );
+        Lecture defaultLecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
+        defaultLectureSchedule = LectureSchedule.builder()
+                .id(1L)
+                .lecture(defaultLecture)
+                .lectureDatetime(LocalDateTime.of(2024, 6, 25, 12, 0, 0))
+                .registerCnt(0)
+                .capacity(30)
+                .build();
     }
 
     @Test
@@ -61,7 +62,7 @@ class LectureServiceTest {
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(defaultLectureSchedule);
-        lectureServiceImpl.apply(userId, userId);
+        lectureServiceImpl.apply(lectureScheduleId, userId);
 
         // then
         verify(lectureScheduleRepository).lockedFindById(lectureScheduleId);
@@ -79,7 +80,7 @@ class LectureServiceTest {
         // when
         when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(defaultLectureSchedule);
         when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(defaultLectureSchedule, userId))
-                .thenReturn(Optional.of(new LectureHistory(defaultLectureSchedule, userId)));
+                .thenReturn(Optional.of(LectureHistory.builder().lectureSchedule(defaultLectureSchedule).userId(userId).build()));
 
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
@@ -93,8 +94,14 @@ class LectureServiceTest {
         // given
         Long lectureScheduleId = 1L;
         Long userId = 1L;
-        Lecture lecture = new Lecture("항해 플러스 백엔드");
-        LectureSchedule lectureSchedule = new LectureSchedule(lecture, LocalDateTime.now(), 30, 30);
+        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
+        LectureSchedule lectureSchedule = LectureSchedule.builder()
+                .id(1L)
+                .lecture(lecture)
+                .lectureDatetime(LocalDateTime.now())
+                .registerCnt(30)
+                .capacity(30)
+                .build();
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(lectureSchedule);
@@ -113,8 +120,14 @@ class LectureServiceTest {
         // given
         Long lectureId = 1L;
         Long userId = 1L;
-        Lecture lecture = new Lecture("항해 플러스 백엔드");
-        LectureSchedule lectureSchedule = new LectureSchedule(lecture, LocalDateTime.now().plusDays(1), 0, 30);
+        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
+        LectureSchedule lectureSchedule = LectureSchedule.builder()
+                .id(1L)
+                .lecture(lecture)
+                .lectureDatetime(LocalDateTime.now().plusDays(1))
+                .registerCnt(0)
+                .capacity(30)
+                .build();
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureId)).thenReturn(lectureSchedule);
@@ -133,8 +146,14 @@ class LectureServiceTest {
         // given
         Long lectureScheduleId = 1L;
         Long userId = 1L;
-        Lecture lecture = new Lecture("항해 플러스 백엔드");
-        LectureSchedule lectureSchedule = new LectureSchedule(lecture, LocalDateTime.now().plusDays(1), 1, 30);
+        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
+        LectureSchedule lectureSchedule = LectureSchedule.builder()
+                .id(1L)
+                .lecture(lecture)
+                .lectureDatetime(LocalDateTime.now().plusDays(1))
+                .registerCnt(1)
+                .capacity(30)
+                .build();
         LectureHistory lectureHistory = LectureHistory.create(lectureSchedule, userId);
 
         // when
@@ -147,20 +166,27 @@ class LectureServiceTest {
     }
 
     @Test
-    @DisplayName("이미 신청한 특강 신청 여부 조회 시 true 반환")
+    @DisplayName("이미 신청한 특강 신청 여부 조회 시 false 반환")
     void checkAlreadyAppliedLectureTrue() {
         // given
         Long lectureScheduleId = 1L;
         Long userId = 1L;
-        Lecture lecture = new Lecture("항해 플러스 백엔드");
-        LectureSchedule lectureSchedule = new LectureSchedule(lecture, LocalDateTime.now().plusDays(1), 1, 30);
+        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
+        LectureSchedule lectureSchedule = LectureSchedule.builder()
+                .id(1L)
+                .lecture(lecture)
+                .lectureDatetime(LocalDateTime.now().plusDays(1))
+                .registerCnt(1)
+                .capacity(30)
+                .build();
 
         // when
         when(lectureScheduleRepository.findById(lectureScheduleId)).thenReturn(lectureSchedule);
-        when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId)).thenReturn(Optional.empty());
+        when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId))
+                .thenReturn(Optional.of(LectureHistory.create(lectureSchedule, userId)));
         Boolean result = lectureServiceImpl.lectureApplicationCheck(userId, lectureScheduleId);
 
         // then
-        assertThat(result).isTrue();
+        assertThat(result).isFalse();
     }
 }

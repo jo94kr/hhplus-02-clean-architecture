@@ -1,12 +1,15 @@
-package io.hhplus.clean_architecture.domain.service;
+package io.hhplus.clean_architecture.domain.lecture.service;
 
-import io.hhplus.clean_architecture.domain.entity.Lecture;
-import io.hhplus.clean_architecture.domain.entity.LectureHistory;
-import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
-import io.hhplus.clean_architecture.domain.exception.AlreadyExistException;
-import io.hhplus.clean_architecture.domain.repository.LectureHistoryRepository;
-import io.hhplus.clean_architecture.domain.repository.LectureRepository;
-import io.hhplus.clean_architecture.domain.repository.LectureScheduleRepository;
+import io.hhplus.clean_architecture.domain.lecture.Lecture;
+import io.hhplus.clean_architecture.domain.lecture.LectureHistory;
+import io.hhplus.clean_architecture.domain.lecture.LectureSchedule;
+import io.hhplus.clean_architecture.infra.entity.LectureEntity;
+import io.hhplus.clean_architecture.infra.entity.LectureHistoryEntity;
+import io.hhplus.clean_architecture.infra.entity.LectureScheduleEntity;
+import io.hhplus.clean_architecture.domain.lecture.exception.AlreadyExistException;
+import io.hhplus.clean_architecture.domain.lecture.repository.LectureHistoryRepository;
+import io.hhplus.clean_architecture.domain.lecture.repository.LectureRepository;
+import io.hhplus.clean_architecture.domain.lecture.repository.LectureScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +37,7 @@ public class LectureServiceImpl implements LectureService {
         }
 
         // 특강 내역 등록
-        lectureHistoryRepository.save(LectureHistory.create(lectureSchedule.apply(), userId));
-
+        lectureHistoryRepository.save(LectureHistory.create(lectureScheduleRepository.save(lectureSchedule.apply()), userId));
         return lectureSchedule;
     }
 
@@ -56,9 +58,9 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public Boolean lectureApplicationCheck(Long userId, Long lectureScheduleId) {
         // 특강 스케쥴 조회
-        LectureSchedule lectureSchedule = lectureScheduleRepository.findById(lectureScheduleId);
+        LectureSchedule lectureScheduleEntity = lectureScheduleRepository.findById(lectureScheduleId);
 
         // 사용자 특강 조회
-        return lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId).isEmpty();
+        return lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureScheduleEntity, userId).isEmpty();
     }
 }

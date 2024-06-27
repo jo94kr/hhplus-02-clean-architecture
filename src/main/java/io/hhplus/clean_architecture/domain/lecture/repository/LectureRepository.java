@@ -1,6 +1,7 @@
-package io.hhplus.clean_architecture.domain.repository;
+package io.hhplus.clean_architecture.domain.lecture.repository;
 
-import io.hhplus.clean_architecture.domain.entity.Lecture;
+import io.hhplus.clean_architecture.domain.lecture.Lecture;
+import io.hhplus.clean_architecture.infra.entity.LectureEntity;
 
 import java.util.List;
 
