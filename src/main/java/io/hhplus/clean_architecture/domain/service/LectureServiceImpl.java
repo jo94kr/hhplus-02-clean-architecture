@@ -1,11 +1,9 @@
 package io.hhplus.clean_architecture.domain.service;
 
-import io.hhplus.clean_architecture.common.exception.BaseException;
-import io.hhplus.clean_architecture.controller.LectureService;
-import io.hhplus.clean_architecture.domain.LectureExceptionEnums;
 import io.hhplus.clean_architecture.domain.entity.Lecture;
 import io.hhplus.clean_architecture.domain.entity.LectureHistory;
 import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
+import io.hhplus.clean_architecture.domain.exception.AlreadyExistException;
 import io.hhplus.clean_architecture.domain.repository.LectureHistoryRepository;
 import io.hhplus.clean_architecture.domain.repository.LectureRepository;
 import io.hhplus.clean_architecture.domain.repository.LectureScheduleRepository;
@@ -32,7 +30,7 @@ public class LectureServiceImpl implements LectureService {
 
         // 사용자 특강 조회
         if (lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId).isPresent()) {
-            throw new BaseException(LectureExceptionEnums.Exception.ALREADY_EXISTS);
+            throw new AlreadyExistException();
         }
 
         // 특강 내역 등록
