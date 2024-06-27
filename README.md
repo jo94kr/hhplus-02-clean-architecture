@@ -33,8 +33,8 @@
 
 3️⃣**(기본)** 특강 신청 완료 여부 조회 API **`GET /lectures/application/{userId}`**
 
-- [ ] 특정 userId 로 특강 신청 완료 여부를 조회하는 API 를 작성합니다.
-- [ ] 특강 신청에 성공한 사용자는 성공했음을, 특강 등록자 명단에 없는 사용자는 실패했음을 반환합니다. (true, false)
+- [x] 특정 userId 로 특강 신청 완료 여부를 조회하는 API 를 작성합니다.
+- [x] 특강 신청에 성공한 사용자는 성공했음을, 특강 등록자 명단에 없는 사용자는 실패했음을 반환합니다. (true, false)
 
 <aside>
 💡 KEY POINT
@@ -44,24 +44,50 @@
 - 같은 사용자에게 여러 번의 특강 슬롯이 제공되지 않도록 제한할 방법을 고민해 봅니다.
 
 # 주요 기술 선정 이유
+```text
+비관적 락(Pessimistic Lock)을 선택한 이유는 트랜잭션 충돌이 발생할 가능성을 미리 예상하고, 데이터의 무결성과 일관성을 보장하기 위해서입니다.
+비관적 락은 요청이 들어오면 먼저 락을 걸어 다른 트랜잭션의 접근을 차단하고 처리합니다.
+선착순으로 특강을 신청할 때 가장 먼저 온 요청이 정상적으로 처리되고, 이후의 요청들은 이전 요청이 완료될 때까지 기다렸다가 순차적으로 진행되도록 보장합니다.
+이런 처리 방식으로 동시에 다수의 사용자가 접근하더라도 안정적으로 요청을 처리 할 수 있습니다.
+```
 
 # 아키텍처
-
 Clean + Layered Architecture
 
 ```
+├─common
+│  ├─config
+│  │      JpaConfig.java
+│  │
+│  ├─exception
+│  │      BaseException.java
+│  │      ExceptionInterface.java
+│  │
+│  └─handler
+│          ApiControllerAdvice.java
+│          ErrorResponse.java
+│
 ├─controller
-│    LectureController.java
-│    LectureService.java
-│  
+│  │  LectureController.java
+│  │
+│  └─dto
+│          ApplyLectureResDto.java
+│          FindLectureResDto.java
+│          FindLectureScheduleResDto.java
 │
 ├─domain
-│  │  LectureExceptionEnums.java
-│  │
 │  ├─entity
+│  │      BaseCreateDatetimeEntity.java
+│  │      BaseEntity.java
 │  │      Lecture.java
 │  │      LectureHistory.java
 │  │      LectureSchedule.java
+│  │
+│  ├─exception
+│  │      AlreadyExistException.java
+│  │      LectureCapacityException.java
+│  │      LectureDateException.java
+│  │      LectureExceptionEnums.java
 │  │
 │  ├─repository
 │  │      LectureHistoryRepository.java
@@ -69,6 +95,7 @@ Clean + Layered Architecture
 │  │      LectureScheduleRepository.java
 │  │
 │  └─service
+│          LectureService.java
 │          LectureServiceImpl.java
 │
 └─infra
@@ -78,7 +105,6 @@ Clean + Layered Architecture
         LectureRepositoryImpl.java
         LectureScheduleJpaRepository.java
         LectureScheduleRepositoryImpl.java
-
 ```
 
 # ERD
