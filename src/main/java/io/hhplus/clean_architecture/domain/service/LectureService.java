@@ -1,18 +1,29 @@
-package io.hhplus.clean_architecture.controller;
+package io.hhplus.clean_architecture.domain.service;
 
 import io.hhplus.clean_architecture.domain.entity.Lecture;
 import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface LectureService {
 
+    /**
+     * 특강 신청
+     */
     LectureSchedule apply(Long userId, Long lectureId);
 
+    /**
+     * 특강 신청 여부 확인
+     */
     Boolean lectureApplicationCheck(Long userId, Long lectureId);
 
+    /**
+     * 특강 스케쥴 목록 조회
+     */
     List<LectureSchedule> findAllLectureScheduleList(Long lectureId);
 
+    /**
+     * 특강 목록 조회
+     */
     List<Lecture> findAllLectureList();
 }

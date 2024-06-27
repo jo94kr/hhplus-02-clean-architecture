@@ -4,6 +4,7 @@ import io.hhplus.clean_architecture.controller.dto.ApplyLectureResDto;
 import io.hhplus.clean_architecture.controller.dto.FindLectureResDto;
 import io.hhplus.clean_architecture.controller.dto.FindLectureScheduleResDto;
 import io.hhplus.clean_architecture.domain.entity.LectureSchedule;
+import io.hhplus.clean_architecture.domain.service.LectureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
