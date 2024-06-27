@@ -1,7 +1,7 @@
 package io.hhplus.clean_architecture.service;
 
 import io.hhplus.clean_architecture.common.exception.BaseException;
-import io.hhplus.clean_architecture.domain.LectureExceptionEnums;
+import io.hhplus.clean_architecture.domain.exception.LectureExceptionEnums;
 import io.hhplus.clean_architecture.domain.entity.Lecture;
 import io.hhplus.clean_architecture.domain.entity.LectureHistory;
 import io.hhplus.clean_architecture.domain.entity.LectureSchedule;

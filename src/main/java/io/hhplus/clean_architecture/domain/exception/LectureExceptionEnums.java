@@ -1,4 +1,4 @@
-package io.hhplus.clean_architecture.domain;
+package io.hhplus.clean_architecture.domain.exception;
 
 import io.hhplus.clean_architecture.common.exception.ExceptionInterface;
 import lombok.Getter;

@@ -1,6 +1,8 @@
 package io.hhplus.clean_architecture.domain.entity;
 
 import io.hhplus.clean_architecture.common.exception.BaseException;
+import io.hhplus.clean_architecture.domain.exception.LectureCapacityException;
+import io.hhplus.clean_architecture.domain.exception.LectureDateException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,9 +11,6 @@ import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import static io.hhplus.clean_architecture.domain.LectureExceptionEnums.Exception.BEFORE_START_DATE;
-import static io.hhplus.clean_architecture.domain.LectureExceptionEnums.Exception.MAX_CAPACITY;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -60,11 +59,11 @@ public class LectureSchedule extends BaseEntity {
     public LectureSchedule apply() {
         // 특강 시작일 체크
         if (!LocalDateTime.now().isAfter(this.lectureDatetime)) {
-            throw new BaseException(BEFORE_START_DATE);
+            throw new LectureDateException();
         }
         // 특강 정원 체크
         if (this.capacity <= this.registerCnt) {
-            throw new BaseException(MAX_CAPACITY);
+            throw new LectureCapacityException();
         }
 
         this.registerCnt += 1;
