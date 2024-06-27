@@ -76,35 +76,46 @@ Clean + Layered Architecture
 │          FindLectureScheduleResDto.java
 │
 ├─domain
-│  ├─entity
-│  │      BaseCreateDatetimeEntity.java
-│  │      BaseEntity.java
-│  │      Lecture.java
-│  │      LectureHistory.java
-│  │      LectureSchedule.java
-│  │
-│  ├─exception
-│  │      AlreadyExistException.java
-│  │      LectureCapacityException.java
-│  │      LectureDateException.java
-│  │      LectureExceptionEnums.java
-│  │
-│  ├─repository
-│  │      LectureHistoryRepository.java
-│  │      LectureRepository.java
-│  │      LectureScheduleRepository.java
-│  │
-│  └─service
-│          LectureService.java
-│          LectureServiceImpl.java
+│  └─lecture
+│      │  Lecture.java
+│      │  LectureHistory.java
+│      │  LectureSchedule.java
+│      │
+│      ├─exception
+│      │      AlreadyExistException.java
+│      │      LectureCapacityException.java
+│      │      LectureDateException.java
+│      │      LectureExceptionEnums.java
+│      │
+│      ├─repository
+│      │      LectureHistoryRepository.java
+│      │      LectureRepository.java
+│      │      LectureScheduleRepository.java
+│      │
+│      └─service
+│              LectureService.java
+│              LectureServiceImpl.java
 │
 └─infra
-        LectureHistoryJpaRepository.java
-        LectureHistoryRepositoryImpl.java
-        LectureJpaRepository.java
-        LectureRepositoryImpl.java
-        LectureScheduleJpaRepository.java
-        LectureScheduleRepositoryImpl.java
+    │  LectureHistoryJpaRepository.java
+    │  LectureHistoryRepositoryImpl.java
+    │  LectureJpaRepository.java
+    │  LectureRepositoryImpl.java
+    │  LectureScheduleJpaRepository.java
+    │  LectureScheduleRepositoryImpl.java
+    │
+    ├─entity
+    │      BaseCreateDatetimeEntity.java
+    │      BaseEntity.java
+    │      LectureEntity.java
+    │      LectureHistoryEntity.java
+    │      LectureScheduleEntity.java
+    │
+    └─mapper
+            LectureHistoryMapper.java
+            LectureMapper.java
+            LectureScheduleMapper.java
+
 ```
 
 # ERD
