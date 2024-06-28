@@ -103,7 +103,7 @@ class LectureServiceTest {
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(lectureSchedule);
-        when(lectureValidator.checkApplyLecture(defaultLectureSchedule, userId)).thenReturn(false);
+        when(lectureValidator.checkApplyLecture(lectureSchedule, userId)).thenReturn(false);
 
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(lectureScheduleId, userId))
@@ -126,7 +126,7 @@ class LectureServiceTest {
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureId)).thenReturn(lectureSchedule);
-        when(lectureValidator.checkApplyLecture(defaultLectureSchedule, userId)).thenReturn(false);
+        when(lectureValidator.checkApplyLecture(lectureSchedule, userId)).thenReturn(false);
 
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
