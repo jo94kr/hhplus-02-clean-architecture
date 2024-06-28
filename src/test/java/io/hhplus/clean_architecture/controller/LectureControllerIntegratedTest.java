@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Sql("classpath:/db/create_lecture.sql")
+@Sql(scripts = "classpath:/db/create_lecture.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class LectureControllerIntegratedTest extends IntegratedTest {
 
     private static final String PATH = "/lectures";

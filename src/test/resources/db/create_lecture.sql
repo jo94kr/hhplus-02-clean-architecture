@@ -1,3 +1,11 @@
+delete from lecture_history;
+delete from lecture_schedule;
+delete from lecture;
+
+alter table lecture alter column id restart with 1;
+alter table lecture_schedule alter column id restart with 1;
+alter table lecture_history alter column id restart with 1;
+
 insert into lecture(lecture_name, create_datetime)
 values ('항해 플러스 백엔드', '2024-06-25T12:00:00'),
        ('항해 플러스 프론트엔드', '2024-06-25T12:00:00');
