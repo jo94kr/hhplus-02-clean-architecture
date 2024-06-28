@@ -25,19 +25,20 @@ public class LectureServiceImpl implements LectureService {
     private final LectureScheduleRepository lectureScheduleRepository;
     private final LectureHistoryRepository lectureHistoryRepository;
 
+    private final LectureValidator lectureValidator;
+
+
     @Override
     @Transactional(rollbackFor = {Exception.class})
     public LectureSchedule apply(Long lectureScheduleId, Long userId) {
         // 특강 스케쥴 조회
         LectureSchedule lectureSchedule = lectureScheduleRepository.lockedFindById(lectureScheduleId);
 
-        // 사용자 특강 조회
-        if (lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId).isPresent()) {
-            throw new AlreadyExistException();
-        }
+        // 특강 신청
+        LectureSchedule apply = lectureSchedule.apply(lectureValidator, userId);
 
         // 특강 내역 등록
-        lectureHistoryRepository.save(LectureHistory.create(null, lectureScheduleRepository.save(lectureSchedule.apply()), userId));
+        lectureHistoryRepository.save(LectureHistory.create(null, lectureScheduleRepository.save(apply), userId));
         return lectureSchedule;
     }
 

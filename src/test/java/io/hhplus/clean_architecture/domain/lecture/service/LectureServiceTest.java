@@ -38,6 +38,9 @@ class LectureServiceTest {
     @Mock
     private LectureScheduleRepository lectureScheduleRepository;
 
+    @Mock
+    private LectureValidator lectureValidator;
+
     private LectureSchedule defaultLectureSchedule;
 
     @BeforeEach
@@ -60,11 +63,11 @@ class LectureServiceTest {
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(defaultLectureSchedule);
+        when(lectureValidator.checkApplyLecture(defaultLectureSchedule, userId)).thenReturn(false);
         lectureServiceImpl.apply(lectureScheduleId, userId);
 
         // then
         verify(lectureScheduleRepository).lockedFindById(lectureScheduleId);
-        verify(lectureHistoryRepository).findLectureHistoryByLectureScheduleAndUserId(defaultLectureSchedule, userId);
         verify(lectureHistoryRepository).save(any());
     }
 
@@ -77,8 +80,7 @@ class LectureServiceTest {
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(defaultLectureSchedule);
-        when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(defaultLectureSchedule, userId))
-                .thenReturn(Optional.of(LectureHistory.create(null, defaultLectureSchedule, userId)));
+        when(lectureValidator.checkApplyLecture(defaultLectureSchedule, userId)).thenReturn(true);
 
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
@@ -101,11 +103,10 @@ class LectureServiceTest {
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(lectureSchedule);
-        when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId))
-                .thenReturn(Optional.empty());
+        when(lectureValidator.checkApplyLecture(defaultLectureSchedule, userId)).thenReturn(false);
 
         // then
-        assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
+        assertThatThrownBy(() -> lectureServiceImpl.apply(lectureScheduleId, userId))
                 .isInstanceOf(LectureCapacityException.class)
                 .hasMessageContaining(LectureExceptionEnums.Exception.MAX_CAPACITY.getMessage());
     }
@@ -125,8 +126,7 @@ class LectureServiceTest {
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureId)).thenReturn(lectureSchedule);
-        when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId))
-                .thenReturn(Optional.empty());
+        when(lectureValidator.checkApplyLecture(defaultLectureSchedule, userId)).thenReturn(false);
 
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))

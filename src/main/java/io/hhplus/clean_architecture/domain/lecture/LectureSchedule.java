@@ -1,7 +1,9 @@
 package io.hhplus.clean_architecture.domain.lecture;
 
+import io.hhplus.clean_architecture.domain.lecture.exception.AlreadyExistException;
 import io.hhplus.clean_architecture.domain.lecture.exception.LectureCapacityException;
 import io.hhplus.clean_architecture.domain.lecture.exception.LectureDateException;
+import io.hhplus.clean_architecture.domain.lecture.service.LectureValidator;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -41,10 +43,15 @@ public class LectureSchedule {
     /**
      * 특강 신청
      *
-     * @throws LectureDateException     특강 시작일 보다 먼저 신청 BEFORE_START_DATE
-     * @throws LectureCapacityException 정원 초과 시 MAX_CAPACITY
+     * @throws AlreadyExistException    동일한 특강 중복 신청 - ALREADY_EXISTS
+     * @throws LectureDateException     특강 시작일 보다 먼저 신청 - BEFORE_START_DATE
+     * @throws LectureCapacityException 정원 초과 시 - MAX_CAPACITY
      */
-    public LectureSchedule apply() {
+    public LectureSchedule apply(LectureValidator lectureValidator, Long userId) {
+        // 중복 수강 체크
+        if (lectureValidator.checkApplyLecture(this, userId)) {
+            throw new AlreadyExistException();
+        }
         // 특강 시작일 체크
         if (!LocalDateTime.now().isAfter(this.lectureDatetime)) {
             throw new LectureDateException();
