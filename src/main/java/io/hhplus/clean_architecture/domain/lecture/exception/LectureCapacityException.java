@@ -4,6 +4,6 @@ import io.hhplus.clean_architecture.common.exception.BaseException;
 
 public class LectureCapacityException extends BaseException {
     public LectureCapacityException() {
-        super(LectureExceptionEnums.Exception.MAX_CAPACITY);
+        super(LectureExceptionEnums.MAX_CAPACITY);
     }
 }
