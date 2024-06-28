@@ -1,11 +1,10 @@
 package io.hhplus.clean_architecture.controller.dto;
 
 import io.hhplus.clean_architecture.domain.lecture.LectureSchedule;
-import io.hhplus.clean_architecture.infra.entity.LectureScheduleEntity;
 
 import java.time.LocalDateTime;
 
-public record FindLectureScheduleResDto(
+public record FindLectureScheduleResponse(
         Long lectureScheduleId,
         String lectureName,
         LocalDateTime lectureDatetime,
@@ -13,8 +12,8 @@ public record FindLectureScheduleResDto(
         int registerCnt
 ) {
 
-    public static FindLectureScheduleResDto of(LectureSchedule lectureSchedule) {
-        return new FindLectureScheduleResDto(lectureSchedule.getId(),
+    public static FindLectureScheduleResponse of(LectureSchedule lectureSchedule) {
+        return new FindLectureScheduleResponse(lectureSchedule.getId(),
                 lectureSchedule.getLecture().getLectureName(),
                 lectureSchedule.getLectureDatetime(),
                 lectureSchedule.getCapacity(),
