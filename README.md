@@ -44,25 +44,28 @@
 - 같은 사용자에게 여러 번의 특강 슬롯이 제공되지 않도록 제한할 방법을 고민해 봅니다.
 
 # 주요 기술 선정 이유
-```text
-비관적 락(Pessimistic Lock)을 선택한 이유는 트랜잭션 충돌이 발생할 가능성을 미리 예상하고, 데이터의 무결성과 일관성을 보장하기 위해서입니다.
-비관적 락은 요청이 들어오면 먼저 락을 걸어 다른 트랜잭션의 접근을 차단하고 처리합니다.
-선착순으로 특강을 신청할 때 가장 먼저 온 요청이 정상적으로 처리되고, 이후의 요청들은 이전 요청이 완료될 때까지 기다렸다가 순차적으로 진행되도록 보장합니다.
-이런 처리 방식으로 동시에 다수의 사용자가 접근하더라도 안정적으로 요청을 처리 할 수 있습니다.
-```
+
+- 비관적 락(Pessimistic Lock)을 선택한 이유는 트랜잭션 충돌이 발생할 가능성을 미리 예상하고, 데이터의 무결성과 일관성을 보장하기 위해서입니다.  
+  비관적 락은 요청이 들어오면 먼저 락을 걸어 다른 트랜잭션의 접근을 차단하고 처리합니다.  
+  선착순으로 특강을 신청할 때 가장 먼저 온 요청이 정상적으로 처리되고, 이후의 요청들은 이전 요청이 완료될 때까지 기다렸다가 순차적으로 진행되도록 보장합니다.  
+  이런 처리 방식으로 동시에 다수의 사용자가 접근하더라도 안정적으로 요청을 처리 할 수 있습니다.
+
+- 격리된 테스트를 위해 `@Sql`을 사용하여 DB의 데이터를 초기화 하도록 했습니다.  
+  공유 자원을 사용하는 테스트는 실행 순서에 따라 성공, 실패 여부가 달라지는 비결정적 테스트가 될 수 있기 때문에 각 테스트를 격리 하여 순서와 상관없이 테스트가 실행되도록 했습니다.
 
 # 아키텍처
+
 Clean + Layered Architecture
 
 ```
 ├─common
 │  ├─config
 │  │      JpaConfig.java
-│  │
+│  │      
 │  ├─exception
 │  │      BaseException.java
 │  │      ExceptionInterface.java
-│  │
+│  │      
 │  └─handler
 │          ApiControllerAdvice.java
 │          ErrorResponse.java
@@ -93,8 +96,10 @@ Clean + Layered Architecture
 │      │      LectureScheduleRepository.java
 │      │
 │      └─service
+│              ApplyLectureValidator.java
 │              LectureService.java
 │              LectureServiceImpl.java
+│              LectureValidator.java
 │
 └─infra
     │  LectureHistoryJpaRepository.java
@@ -116,33 +121,34 @@ Clean + Layered Architecture
             LectureMapper.java
             LectureScheduleMapper.java
 
+
 ```
 
 # ERD
 
 ```mermaid
 erDiagram
-    lecture ||--|{ lecture_schedule: contains
-    lecture_schedule ||--o{ lecture_history: contains
-    lecture {
-        long id "특강 PK"
-        string lecture_name "특강 명"
-        datetime create_datetime "생성일"
-        datetime modify_datetime "수정일"
-    }
-    lecture_schedule {
-        long id "특강 스케쥴 PK"
-        long lecture_id "특강 PK"
-        datetime lecture_datetime "특강 시작일"
-        int register_cnt "신청 인원"
-        int capacity "정원"
-        datetime create_datetime "생성일"
-        datetime modify_datetime "수정일"
-    }
-    lecture_history {
-        long id "특강 신청 내역 PK"
-        long lecture_schedule_id "특강 PK"
-        long user_id "유저 PK"
-        datetime create_datetime "생성일"
-    }
+  lecture ||--|{ lecture_schedule: contains
+  lecture_schedule ||--o{ lecture_history: contains
+  lecture {
+    long id PK "특강 PK"
+    string lecture_name "특강 명"
+    datetime create_datetime "생성일"
+    datetime modify_datetime "수정일"
+  }
+  lecture_schedule {
+    long id PK "특강 스케쥴 PK"
+    long lecture_id "특강 PK"
+    datetime lecture_datetime "특강 시작일"
+    int register_cnt "신청 인원"
+    int capacity "정원"
+    datetime create_datetime "생성일"
+    datetime modify_datetime "수정일"
+  }
+  lecture_history {
+    long id PK "특강 신청 내역 PK"
+    long lecture_schedule_id UK "특강 PK"
+    long user_id UK "유저 PK"
+    datetime create_datetime "생성일"
+  }
 ```
