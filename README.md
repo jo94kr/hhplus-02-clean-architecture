@@ -66,7 +66,7 @@ Clean + Layered Architecture
 │  ├─exception
 │  │      BaseException.java
 │  │      ExceptionInterface.java
-│  │      
+│  │
 │  └─handler
 │          ApiControllerAdvice.java
 │          ErrorResponse.java
@@ -75,9 +75,9 @@ Clean + Layered Architecture
 │  │  LectureController.java
 │  │
 │  └─dto
-│          ApplyLectureResDto.java
-│          FindLectureResDto.java
-│          FindLectureScheduleResDto.java
+│          ApplyLectureResponse.java
+│          FindLectureResponse.java
+│          FindLectureScheduleResponse.java
 │
 ├─domain
 │  └─lecture
