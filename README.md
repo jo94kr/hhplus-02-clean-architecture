@@ -66,7 +66,7 @@ Clean + Layered Architecture
 │  ├─exception
 │  │      BaseException.java
 │  │      ExceptionInterface.java
-│  │      
+│  │
 │  └─handler
 │          ApiControllerAdvice.java
 │          ErrorResponse.java
@@ -75,9 +75,9 @@ Clean + Layered Architecture
 │  │  LectureController.java
 │  │
 │  └─dto
-│          ApplyLectureResDto.java
-│          FindLectureResDto.java
-│          FindLectureScheduleResDto.java
+│          ApplyLectureResponse.java
+│          FindLectureResponse.java
+│          FindLectureScheduleResponse.java
 │
 ├─domain
 │  └─lecture
@@ -122,34 +122,33 @@ Clean + Layered Architecture
             LectureMapper.java
             LectureScheduleMapper.java
 
-
 ```
 
 # ERD
 
 ```mermaid
 erDiagram
-    lecture ||--|{ lecture_schedule: contains
-    lecture_schedule ||--o{ lecture_history: contains
-    lecture {
-        long id PK "특강 PK"
-        string lecture_name "특강 명"
-        datetime create_datetime "생성일"
-        datetime modify_datetime "수정일"
-    }
-    lecture_schedule {
-        long id PK "특강 스케쥴 PK"
-        long lecture_id "특강 PK"
-        datetime lecture_datetime "특강 시작일"
-        int register_cnt "신청 인원"
-        int capacity "정원"
-        datetime create_datetime "생성일"
-        datetime modify_datetime "수정일"
-    }
-    lecture_history {
-        long id PK "특강 신청 내역 PK"
-        long lecture_schedule_id UK "특강 PK"
-        long user_id UK "유저 PK"
-        datetime create_datetime "생성일"
-    }
+  lecture ||--|{ lecture_schedule: contains
+  lecture_schedule ||--o{ lecture_history: contains
+  lecture {
+    long id PK "특강 PK"
+    string lecture_name "특강 명"
+    datetime create_datetime "생성일"
+    datetime modify_datetime "수정일"
+  }
+  lecture_schedule {
+    long id PK "특강 스케쥴 PK"
+    long lecture_id "특강 PK"
+    datetime lecture_datetime "특강 시작일"
+    int register_cnt "신청 인원"
+    int capacity "정원"
+    datetime create_datetime "생성일"
+    datetime modify_datetime "수정일"
+  }
+  lecture_history {
+    long id PK "특강 신청 내역 PK"
+    long lecture_schedule_id UK "특강 PK"
+    long user_id UK "유저 PK"
+    datetime create_datetime "생성일"
+  }
 ```
