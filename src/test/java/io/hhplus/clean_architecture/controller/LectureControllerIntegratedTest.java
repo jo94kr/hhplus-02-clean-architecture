@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// 테스트 격리를 위한 데이터 초기화
 @Sql(scripts = "classpath:/db/create_lecture.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class LectureControllerIntegratedTest extends IntegratedTest {
 
