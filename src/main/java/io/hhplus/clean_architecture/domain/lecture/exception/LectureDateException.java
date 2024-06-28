@@ -4,6 +4,6 @@ import io.hhplus.clean_architecture.common.exception.BaseException;
 
 public class LectureDateException extends BaseException {
     public LectureDateException() {
-        super(LectureExceptionEnums.Exception.BEFORE_START_DATE);
+        super(LectureExceptionEnums.BEFORE_START_DATE);
     }
 }
