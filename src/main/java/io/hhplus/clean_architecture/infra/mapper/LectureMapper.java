@@ -5,11 +5,7 @@ import io.hhplus.clean_architecture.infra.entity.LectureEntity;
 
 public class LectureMapper {
     public static Lecture toDomain(LectureEntity lectureEntity) {
-        return Lecture
-                .builder()
-                .id(lectureEntity.getId())
-                .lectureName(lectureEntity.getLectureName())
-                .build();
+        return Lecture.create(lectureEntity.getId(), lectureEntity.getLectureName());
     }
 
     public static LectureEntity toEntity(Lecture lecture) {

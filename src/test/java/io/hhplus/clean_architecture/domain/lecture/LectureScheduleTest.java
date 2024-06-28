@@ -16,13 +16,12 @@ class LectureScheduleTest {
     @DisplayName("특강 신청 정상 처리")
     void apply() {
         // given
-        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
-        LectureSchedule lectureSchedule = LectureSchedule.builder()
-                .lecture(lecture)
-                .lectureDatetime(LocalDateTime.of(2024, 6, 25, 13, 0, 0))
-                .registerCnt(0)
-                .capacity(30)
-                .build();
+        Lecture lecture = Lecture.create(1L, "항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = LectureSchedule.create(1L,
+                lecture,
+                LocalDateTime.of(2024, 6, 25, 13, 0, 0),
+                0,
+                30);
 
         // when
         LectureSchedule apply = lectureSchedule.apply();
@@ -35,13 +34,12 @@ class LectureScheduleTest {
     @DisplayName("시작일 이전 특강 신청")
     void applyLectureBeforeStartDate() {
         // given
-        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
-        LectureSchedule lectureSchedule = LectureSchedule.builder()
-                .lecture(lecture)
-                .lectureDatetime(LocalDateTime.now().plusDays(1))
-                .registerCnt(0)
-                .capacity(30)
-                .build();
+        Lecture lecture = Lecture.create(1L, "항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = LectureSchedule.create(1L,
+                lecture,
+                LocalDateTime.now().plusDays(1),
+                0,
+                30);
 
         // when
         ThrowableAssert.ThrowingCallable throwingCallable = lectureSchedule::apply;
@@ -49,22 +47,21 @@ class LectureScheduleTest {
         // then
         assertThatExceptionOfType(LectureDateException.class).isThrownBy(throwingCallable);
     }
-    
+
     @Test
     @DisplayName("정원 초과 상태에서 특강 신청")
     void lectureCapacityOver() {
         // given
-        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
-        LectureSchedule lectureSchedule = LectureSchedule.builder()
-                .lecture(lecture)
-                .lectureDatetime(LocalDateTime.of(2024, 6, 25, 13, 0, 0))
-                .registerCnt(30)
-                .capacity(30)
-                .build();
+        Lecture lecture = Lecture.create(1L, "항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = LectureSchedule.create(1L,
+                lecture,
+                LocalDateTime.of(2024, 6, 25, 13, 0, 0),
+                30,
+                30);
 
         // when
         ThrowableAssert.ThrowingCallable throwingCallable = lectureSchedule::apply;
-        
+
         // then
         assertThatExceptionOfType(LectureCapacityException.class).isThrownBy(throwingCallable);
     }

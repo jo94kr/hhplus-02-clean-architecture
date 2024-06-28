@@ -7,13 +7,11 @@ import io.hhplus.clean_architecture.infra.entity.LectureScheduleEntity;
 
 public class LectureScheduleMapper {
     public static LectureSchedule toDomain(LectureScheduleEntity lectureScheduleEntity) {
-        return LectureSchedule.builder()
-                .id(lectureScheduleEntity.getId())
-                .lecture(LectureMapper.toDomain(lectureScheduleEntity.getLecture()))
-                .lectureDatetime(lectureScheduleEntity.getLectureDatetime())
-                .registerCnt(lectureScheduleEntity.getRegisterCnt())
-                .capacity(lectureScheduleEntity.getCapacity())
-                .build();
+        return LectureSchedule.create(lectureScheduleEntity.getId(),
+                LectureMapper.toDomain(lectureScheduleEntity.getLecture()),
+                lectureScheduleEntity.getLectureDatetime(),
+                lectureScheduleEntity.getRegisterCnt(),
+                lectureScheduleEntity.getCapacity());
     }
 
     public static LectureScheduleEntity toEntity(LectureSchedule lectureSchedule) {

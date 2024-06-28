@@ -7,10 +7,9 @@ import io.hhplus.clean_architecture.infra.entity.LectureHistoryEntity;
 
 public class LectureHistoryMapper {
     public static LectureHistory toDomain(LectureHistoryEntity lectureHistoryEntity) {
-        return LectureHistory.builder()
-                .id(lectureHistoryEntity.getId())
-                .lectureSchedule(LectureScheduleMapper.toDomain(lectureHistoryEntity.getLectureSchedule()))
-                .userId(lectureHistoryEntity.getUserId()).build();
+        return LectureHistory.create(lectureHistoryEntity.getId(),
+                LectureScheduleMapper.toDomain(lectureHistoryEntity.getLectureSchedule()),
+                lectureHistoryEntity.getUserId());
     }
 
     public static LectureHistoryEntity toEntity(LectureHistory lectureHistory) {

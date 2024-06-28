@@ -1,20 +1,24 @@
 package io.hhplus.clean_architecture.domain.lecture;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class LectureHistory {
 
-    private Long id;
-    private LectureSchedule lectureSchedule;
-    private Long userId;
+    private final Long id;
+    private final LectureSchedule lectureSchedule;
+    private final Long userId;
 
-    public static LectureHistory create(LectureSchedule lectureSchedule, Long userId) {
-        return LectureHistory.builder()
-                .lectureSchedule(lectureSchedule)
-                .userId(userId)
-                .build();
+    private LectureHistory(Long id, LectureSchedule lectureSchedule, Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("userId cannot be null");
+        }
+        this.id = id;
+        this.lectureSchedule = lectureSchedule;
+        this.userId = userId;
+    }
+
+    public static LectureHistory create(Long id, LectureSchedule lectureSchedule, Long userId) {
+        return new LectureHistory(id, lectureSchedule, userId);
     }
 }

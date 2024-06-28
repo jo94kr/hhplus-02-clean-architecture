@@ -62,7 +62,7 @@ class LectureControllerIntegratedTest extends IntegratedTest {
 
     @Test
     @DisplayName("동일한 사용자가 동일한 특강 동시 호출")
-    void test() {
+    void sameSpecialLectureByTheSameUser() {
         // given
         // when
         int cnt = 2;

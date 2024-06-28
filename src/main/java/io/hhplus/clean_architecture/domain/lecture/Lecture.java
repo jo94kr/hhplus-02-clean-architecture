@@ -1,12 +1,22 @@
 package io.hhplus.clean_architecture.domain.lecture;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class Lecture {
 
-    private Long id;
-    private String lectureName;
+    private final Long id;
+    private final String lectureName;
+
+    private Lecture(Long id, String lectureName) {
+        if (lectureName == null) {
+            throw new IllegalArgumentException("lectureName cannot be null");
+        }
+        this.id = id;
+        this.lectureName = lectureName;
+    }
+
+    public static Lecture create(Long id, String lectureName) {
+        return new Lecture(id, lectureName);
+    }
 }

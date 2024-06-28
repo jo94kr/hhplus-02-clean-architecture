@@ -37,7 +37,7 @@ public class LectureServiceImpl implements LectureService {
         }
 
         // 특강 내역 등록
-        lectureHistoryRepository.save(LectureHistory.create(lectureScheduleRepository.save(lectureSchedule.apply()), userId));
+        lectureHistoryRepository.save(LectureHistory.create(null, lectureScheduleRepository.save(lectureSchedule.apply()), userId));
         return lectureSchedule;
     }
 

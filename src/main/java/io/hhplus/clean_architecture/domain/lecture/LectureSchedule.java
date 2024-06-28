@@ -1,17 +1,12 @@
 package io.hhplus.clean_architecture.domain.lecture;
 
-import io.hhplus.clean_architecture.common.exception.BaseException;
-import io.hhplus.clean_architecture.domain.lecture.exception.AlreadyExistException;
 import io.hhplus.clean_architecture.domain.lecture.exception.LectureCapacityException;
 import io.hhplus.clean_architecture.domain.lecture.exception.LectureDateException;
-import io.hhplus.clean_architecture.domain.lecture.repository.LectureHistoryRepository;
-import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
 public class LectureSchedule {
 
     private Long id;
@@ -20,10 +15,33 @@ public class LectureSchedule {
     private int registerCnt;
     private int capacity;
 
+    private LectureSchedule(Long id,
+                            Lecture lecture,
+                            LocalDateTime lectureDatetime,
+                            int registerCnt,
+                            int capacity) {
+        this.id = id;
+        this.lecture = lecture;
+        this.lectureDatetime = lectureDatetime;
+        this.registerCnt = registerCnt;
+        this.capacity = capacity;
+    }
+
+    public static LectureSchedule create(Long id,
+                                         Lecture lecture,
+                                         LocalDateTime lectureDatetime,
+                                         int registerCnt,
+                                         int capacity) {
+        if (registerCnt < 0 || capacity < 0) {
+            throw new IllegalArgumentException("registerCnt and capacity should be greater than 0");
+        }
+        return new LectureSchedule(id, lecture, lectureDatetime, registerCnt, capacity);
+    }
+
     /**
      * 특강 신청
      *
-     * @throws LectureDateException 특강 시작일 보다 먼저 신청 BEFORE_START_DATE
+     * @throws LectureDateException     특강 시작일 보다 먼저 신청 BEFORE_START_DATE
      * @throws LectureCapacityException 정원 초과 시 MAX_CAPACITY
      */
     public LectureSchedule apply() {

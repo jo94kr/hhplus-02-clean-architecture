@@ -43,14 +43,12 @@ class LectureServiceTest {
     @BeforeEach
     void setUp() {
         // 특강 기본 세팅
-        Lecture defaultLecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
-        defaultLectureSchedule = LectureSchedule.builder()
-                .id(1L)
-                .lecture(defaultLecture)
-                .lectureDatetime(LocalDateTime.of(2024, 6, 25, 12, 0, 0))
-                .registerCnt(0)
-                .capacity(30)
-                .build();
+        Lecture defaultLecture = Lecture.create(1L, "항해 플러스 백엔드");
+        defaultLectureSchedule = LectureSchedule.create(1L,
+                defaultLecture,
+                LocalDateTime.of(2024, 6, 25, 12, 0, 0),
+                0,
+                30);
     }
 
     @Test
@@ -80,7 +78,7 @@ class LectureServiceTest {
         // when
         when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(defaultLectureSchedule);
         when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(defaultLectureSchedule, userId))
-                .thenReturn(Optional.of(LectureHistory.builder().lectureSchedule(defaultLectureSchedule).userId(userId).build()));
+                .thenReturn(Optional.of(LectureHistory.create(null, defaultLectureSchedule, userId)));
 
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
@@ -94,14 +92,12 @@ class LectureServiceTest {
         // given
         Long lectureScheduleId = 1L;
         Long userId = 1L;
-        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
-        LectureSchedule lectureSchedule = LectureSchedule.builder()
-                .id(1L)
-                .lecture(lecture)
-                .lectureDatetime(LocalDateTime.now())
-                .registerCnt(30)
-                .capacity(30)
-                .build();
+        Lecture lecture = Lecture.create(1L, "항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = LectureSchedule.create(1L,
+                lecture,
+                LocalDateTime.now(),
+                30,
+                30);
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(lectureSchedule);
@@ -120,14 +116,12 @@ class LectureServiceTest {
         // given
         Long lectureId = 1L;
         Long userId = 1L;
-        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
-        LectureSchedule lectureSchedule = LectureSchedule.builder()
-                .id(1L)
-                .lecture(lecture)
-                .lectureDatetime(LocalDateTime.now().plusDays(1))
-                .registerCnt(0)
-                .capacity(30)
-                .build();
+        Lecture lecture = Lecture.create(lectureId, "항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = LectureSchedule.create(1L,
+                lecture,
+                LocalDateTime.now().plusDays(1),
+                0,
+                30);
 
         // when
         when(lectureScheduleRepository.lockedFindById(lectureId)).thenReturn(lectureSchedule);
@@ -146,15 +140,14 @@ class LectureServiceTest {
         // given
         Long lectureScheduleId = 1L;
         Long userId = 1L;
-        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
-        LectureSchedule lectureSchedule = LectureSchedule.builder()
-                .id(1L)
-                .lecture(lecture)
-                .lectureDatetime(LocalDateTime.now().plusDays(1))
-                .registerCnt(1)
-                .capacity(30)
-                .build();
-        LectureHistory lectureHistory = LectureHistory.create(lectureSchedule, userId);
+        Lecture lecture = Lecture.create(1L, "항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = LectureSchedule.create(1L,
+                lecture,
+                LocalDateTime.now().plusDays(1),
+                1,
+                30);
+
+        LectureHistory lectureHistory = LectureHistory.create(null, lectureSchedule, userId);
 
         // when
         when(lectureScheduleRepository.findById(lectureScheduleId)).thenReturn(lectureSchedule);
@@ -171,19 +164,17 @@ class LectureServiceTest {
         // given
         Long lectureScheduleId = 1L;
         Long userId = 1L;
-        Lecture lecture = Lecture.builder().lectureName("항해 플러스 백엔드").build();
-        LectureSchedule lectureSchedule = LectureSchedule.builder()
-                .id(1L)
-                .lecture(lecture)
-                .lectureDatetime(LocalDateTime.now().plusDays(1))
-                .registerCnt(1)
-                .capacity(30)
-                .build();
+        Lecture lecture = Lecture.create(1L, "항해 플러스 백엔드");
+        LectureSchedule lectureSchedule = LectureSchedule.create(1L,
+                lecture,
+                LocalDateTime.now().plusDays(1),
+                1,
+                30);
 
         // when
         when(lectureScheduleRepository.findById(lectureScheduleId)).thenReturn(lectureSchedule);
         when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId))
-                .thenReturn(Optional.of(LectureHistory.create(lectureSchedule, userId)));
+                .thenReturn(Optional.of(LectureHistory.create(null, lectureSchedule, userId)));
         Boolean result = lectureServiceImpl.lectureApplicationCheck(userId, lectureScheduleId);
 
         // then

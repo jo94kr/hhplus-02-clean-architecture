@@ -1,7 +1,6 @@
 package io.hhplus.clean_architecture.infra;
 
 import io.hhplus.clean_architecture.domain.lecture.Lecture;
-import io.hhplus.clean_architecture.infra.entity.LectureEntity;
 import io.hhplus.clean_architecture.domain.lecture.repository.LectureRepository;
 import io.hhplus.clean_architecture.infra.mapper.LectureMapper;
 import jakarta.persistence.EntityNotFoundException;
