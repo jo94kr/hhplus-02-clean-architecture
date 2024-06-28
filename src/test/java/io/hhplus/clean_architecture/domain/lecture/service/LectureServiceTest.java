@@ -85,7 +85,7 @@ class LectureServiceTest {
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
                 .isInstanceOf(AlreadyExistException.class)
-                .hasMessageContaining(LectureExceptionEnums.Exception.ALREADY_EXISTS.getMessage());
+                .hasMessageContaining(LectureExceptionEnums.ALREADY_EXISTS.getMessage());
     }
 
     @Test
@@ -108,7 +108,7 @@ class LectureServiceTest {
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(lectureScheduleId, userId))
                 .isInstanceOf(LectureCapacityException.class)
-                .hasMessageContaining(LectureExceptionEnums.Exception.MAX_CAPACITY.getMessage());
+                .hasMessageContaining(LectureExceptionEnums.MAX_CAPACITY.getMessage());
     }
 
     @Test
@@ -131,7 +131,7 @@ class LectureServiceTest {
         // then
         assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
                 .isInstanceOf(LectureDateException.class)
-                .hasMessageContaining(LectureExceptionEnums.Exception.BEFORE_START_DATE.getMessage());
+                .hasMessageContaining(LectureExceptionEnums.BEFORE_START_DATE.getMessage());
     }
 
     @Test
