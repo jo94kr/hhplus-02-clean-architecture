@@ -2,6 +2,8 @@ package io.hhplus.clean_architecture.domain.lecture.service;
 
 import io.hhplus.clean_architecture.domain.lecture.Lecture;
 import io.hhplus.clean_architecture.domain.lecture.LectureSchedule;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -25,5 +27,5 @@ public interface LectureService {
     /**
      * 특강 목록 조회
      */
-    List<Lecture> findAllLectureList();
+    Page<Lecture> findAllLectureList(Pageable pageable);
 }

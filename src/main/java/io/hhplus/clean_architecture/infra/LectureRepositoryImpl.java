@@ -5,6 +5,8 @@ import io.hhplus.clean_architecture.domain.lecture.repository.LectureRepository;
 import io.hhplus.clean_architecture.infra.mapper.LectureMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,10 +18,8 @@ public class LectureRepositoryImpl implements LectureRepository {
     private final LectureJpaRepository lectureJpaRepository;
 
     @Override
-    public List<Lecture> findAllLectureList() {
-        return lectureJpaRepository.findAll().stream()
-                .map(LectureMapper::toDomain)
-                .toList();
+    public Page<Lecture> findAllLectureList(Pageable pageable) {
+        return lectureJpaRepository.findAll(pageable).map(LectureMapper::toDomain);
     }
 
     @Override
