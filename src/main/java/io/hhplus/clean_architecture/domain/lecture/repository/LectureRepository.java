@@ -1,7 +1,8 @@
 package io.hhplus.clean_architecture.domain.lecture.repository;
 
 import io.hhplus.clean_architecture.domain.lecture.Lecture;
-import io.hhplus.clean_architecture.infra.entity.LectureEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,6 +16,6 @@ public interface LectureRepository {
     /**
      * 특강 목록 조회
      */
-    List<Lecture> findAllLectureList();
+    Page<Lecture> findAllLectureList(Pageable pageable);
 
 }

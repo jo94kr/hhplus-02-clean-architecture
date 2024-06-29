@@ -3,14 +3,13 @@ package io.hhplus.clean_architecture.domain.lecture.service;
 import io.hhplus.clean_architecture.domain.lecture.Lecture;
 import io.hhplus.clean_architecture.domain.lecture.LectureHistory;
 import io.hhplus.clean_architecture.domain.lecture.LectureSchedule;
-import io.hhplus.clean_architecture.infra.entity.LectureEntity;
-import io.hhplus.clean_architecture.infra.entity.LectureHistoryEntity;
-import io.hhplus.clean_architecture.infra.entity.LectureScheduleEntity;
 import io.hhplus.clean_architecture.domain.lecture.exception.AlreadyExistException;
 import io.hhplus.clean_architecture.domain.lecture.repository.LectureHistoryRepository;
 import io.hhplus.clean_architecture.domain.lecture.repository.LectureRepository;
 import io.hhplus.clean_architecture.domain.lecture.repository.LectureScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +42,8 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public List<Lecture> findAllLectureList() {
-        return lectureRepository.findAllLectureList();
+    public Page<Lecture> findAllLectureList(Pageable pageable) {
+        return lectureRepository.findAllLectureList(pageable);
     }
 
     @Override

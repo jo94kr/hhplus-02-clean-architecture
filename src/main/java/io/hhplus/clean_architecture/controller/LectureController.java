@@ -6,6 +6,8 @@ import io.hhplus.clean_architecture.controller.dto.FindLectureScheduleResponse;
 import io.hhplus.clean_architecture.domain.lecture.LectureSchedule;
 import io.hhplus.clean_architecture.domain.lecture.service.LectureService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,10 +33,8 @@ public class LectureController {
      * 특강 목록
      */
     @GetMapping
-    public ResponseEntity<List<FindLectureResponse>> findAllLectureList() {
-        return ResponseEntity.ok(lectureService.findAllLectureList().stream()
-                .map(FindLectureResponse::of)
-                .toList());
+    public ResponseEntity<Page<FindLectureResponse>> findAllLectureList(Pageable pageable) {
+        return ResponseEntity.ok(lectureService.findAllLectureList(pageable).map(FindLectureResponse::of));
     }
 
     /**
