@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 class LectureServiceTest {
 
     @InjectMocks
-    private LectureServiceImpl lectureServiceImpl;
+    private LectureService lectureService;
 
     @Mock
     private LectureHistoryRepository lectureHistoryRepository;
@@ -64,7 +64,7 @@ class LectureServiceTest {
         // when
         when(lectureScheduleRepository.lockedFindById(lectureScheduleId)).thenReturn(defaultLectureSchedule);
         when(lectureValidator.checkApplyLecture(defaultLectureSchedule, userId)).thenReturn(false);
-        lectureServiceImpl.apply(lectureScheduleId, userId);
+        lectureService.apply(lectureScheduleId, userId);
 
         // then
         verify(lectureScheduleRepository).lockedFindById(lectureScheduleId);
@@ -83,7 +83,7 @@ class LectureServiceTest {
         when(lectureValidator.checkApplyLecture(defaultLectureSchedule, userId)).thenReturn(true);
 
         // then
-        assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
+        assertThatThrownBy(() -> lectureService.apply(userId, userId))
                 .isInstanceOf(AlreadyExistException.class)
                 .hasMessageContaining(LectureExceptionEnums.ALREADY_EXISTS.getMessage());
     }
@@ -106,7 +106,7 @@ class LectureServiceTest {
         when(lectureValidator.checkApplyLecture(lectureSchedule, userId)).thenReturn(false);
 
         // then
-        assertThatThrownBy(() -> lectureServiceImpl.apply(lectureScheduleId, userId))
+        assertThatThrownBy(() -> lectureService.apply(lectureScheduleId, userId))
                 .isInstanceOf(LectureCapacityException.class)
                 .hasMessageContaining(LectureExceptionEnums.MAX_CAPACITY.getMessage());
     }
@@ -129,7 +129,7 @@ class LectureServiceTest {
         when(lectureValidator.checkApplyLecture(lectureSchedule, userId)).thenReturn(false);
 
         // then
-        assertThatThrownBy(() -> lectureServiceImpl.apply(userId, userId))
+        assertThatThrownBy(() -> lectureService.apply(userId, userId))
                 .isInstanceOf(LectureDateException.class)
                 .hasMessageContaining(LectureExceptionEnums.BEFORE_START_DATE.getMessage());
     }
@@ -152,7 +152,7 @@ class LectureServiceTest {
         // when
         when(lectureScheduleRepository.findById(lectureScheduleId)).thenReturn(lectureSchedule);
         when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId)).thenReturn(Optional.of(lectureHistory));
-        Boolean result = lectureServiceImpl.lectureApplicationCheck(userId, lectureScheduleId);
+        Boolean result = lectureService.lectureApplicationCheck(userId, lectureScheduleId);
 
         // then
         assertThat(result).isFalse();
@@ -175,7 +175,7 @@ class LectureServiceTest {
         when(lectureScheduleRepository.findById(lectureScheduleId)).thenReturn(lectureSchedule);
         when(lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId))
                 .thenReturn(Optional.of(LectureHistory.create(null, lectureSchedule, userId)));
-        Boolean result = lectureServiceImpl.lectureApplicationCheck(userId, lectureScheduleId);
+        Boolean result = lectureService.lectureApplicationCheck(userId, lectureScheduleId);
 
         // then
         assertThat(result).isFalse();
