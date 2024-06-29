@@ -99,7 +99,6 @@ Clean + Layered Architecture
 │      └─service
 │              ApplyLectureValidator.java
 │              LectureService.java
-│              LectureServiceImpl.java
 │              LectureValidator.java
 │
 └─infra

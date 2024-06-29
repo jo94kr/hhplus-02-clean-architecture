@@ -1,8 +1,5 @@
 package io.hhplus.clean_architecture.infra.entity;
 
-import io.hhplus.clean_architecture.common.exception.BaseException;
-import io.hhplus.clean_architecture.domain.lecture.exception.LectureCapacityException;
-import io.hhplus.clean_architecture.domain.lecture.exception.LectureDateException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -50,27 +47,6 @@ public class LectureScheduleEntity extends BaseEntity {
         this.lectureDatetime = lectureDatetime;
         this.registerCnt = registerCnt;
         this.capacity = capacity;
-    }
-
-    /**
-     * 특강 신청
-     *
-     * @throws BaseException 특강 시작일 보다 먼저 신청 BEFORE_START_DATE
-     * @throws BaseException 정원 초과 시 MAX_CAPACITY
-     */
-    public LectureScheduleEntity apply() {
-        // 특강 시작일 체크
-        if (!LocalDateTime.now().isAfter(this.lectureDatetime)) {
-            throw new LectureDateException();
-        }
-        // 특강 정원 체크
-        if (this.capacity <= this.registerCnt) {
-            throw new LectureCapacityException();
-        }
-
-        this.registerCnt += 1;
-
-        return this;
     }
 
     @Override

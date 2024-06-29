@@ -53,9 +53,9 @@ public class LectureService {
 
     public Boolean lectureApplicationCheck(Long userId, Long lectureScheduleId) {
         // 특강 스케쥴 조회
-        LectureSchedule lectureScheduleEntity = lectureScheduleRepository.findById(lectureScheduleId);
+        LectureSchedule lectureSchedule = lectureScheduleRepository.findById(lectureScheduleId);
 
         // 사용자 특강 조회
-        return lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureScheduleEntity, userId).isEmpty();
+        return lectureHistoryRepository.findLectureHistoryByLectureScheduleAndUserId(lectureSchedule, userId).isEmpty();
     }
 }
